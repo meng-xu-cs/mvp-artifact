@@ -1,0 +1,21 @@
+#!/bin/bash
+
+WORKSPACE="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+
+# boogie
+PATH_DOTNET=${WORKSPACE}/dep/dotnet
+PATH_BOOGIE=${PATH_DOTNET}/tools/boogie
+
+# SMT solvers
+PATH_Z3=${WORKSPACE}/dep/z3
+PATH_CVC4=${WORKSPACE}/dep/cvc4
+
+# move prover
+PATH_MOVE_PROVER=${WORKSPACE}/bin/move-prover-v1
+
+# exec wrapper with environment setup
+DOTNET_ROOT=${PATH_DOTNET} \
+BOOGIE_EXE=${PATH_BOOGIE} \
+Z3_EXE=${PATH_Z3} \
+CVC4_EXE=${PATH_CVC4} \
+  ${PATH_MOVE_PROVER} $@

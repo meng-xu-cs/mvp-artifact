@@ -1,0 +1,2 @@
+bin/move-prover-v1 filter=lfs diff=lfs merge=lfs -text
+bin/move-prover-v2 filter=lfs diff=lfs merge=lfs -text

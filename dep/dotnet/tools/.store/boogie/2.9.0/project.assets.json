@@ -1,0 +1,174 @@
+{
+  "version": 3,
+  "targets": {
+    "net5.0": {
+      "Boogie/2.9.0": {
+        "type": "package"
+      }
+    },
+    "net5.0/any": {
+      "Boogie/2.9.0": {
+        "type": "package",
+        "tools": {
+          "tools/net5.0/any/Boogie.AbsInt.dll": {},
+          "tools/net5.0/any/Boogie.AbsInt.pdb": {},
+          "tools/net5.0/any/Boogie.BaseTypes.dll": {},
+          "tools/net5.0/any/Boogie.BaseTypes.pdb": {},
+          "tools/net5.0/any/Boogie.CodeContractsExtender.dll": {},
+          "tools/net5.0/any/Boogie.CodeContractsExtender.pdb": {},
+          "tools/net5.0/any/Boogie.Concurrency.dll": {},
+          "tools/net5.0/any/Boogie.Concurrency.pdb": {},
+          "tools/net5.0/any/Boogie.Core.dll": {},
+          "tools/net5.0/any/Boogie.Core.pdb": {},
+          "tools/net5.0/any/Boogie.ExecutionEngine.dll": {},
+          "tools/net5.0/any/Boogie.ExecutionEngine.pdb": {},
+          "tools/net5.0/any/Boogie.Graph.dll": {},
+          "tools/net5.0/any/Boogie.Graph.pdb": {},
+          "tools/net5.0/any/Boogie.Houdini.dll": {},
+          "tools/net5.0/any/Boogie.Houdini.pdb": {},
+          "tools/net5.0/any/Boogie.Model.dll": {},
+          "tools/net5.0/any/Boogie.Model.pdb": {},
+          "tools/net5.0/any/Boogie.Predication.dll": {},
+          "tools/net5.0/any/Boogie.Predication.pdb": {},
+          "tools/net5.0/any/Boogie.Provers.SMTLib.dll": {},
+          "tools/net5.0/any/Boogie.Provers.SMTLib.pdb": {},
+          "tools/net5.0/any/Boogie.VCExpr.dll": {},
+          "tools/net5.0/any/Boogie.VCExpr.pdb": {},
+          "tools/net5.0/any/Boogie.VCGeneration.dll": {},
+          "tools/net5.0/any/Boogie.VCGeneration.pdb": {},
+          "tools/net5.0/any/BoogieDriver.deps.json": {},
+          "tools/net5.0/any/BoogieDriver.dll": {},
+          "tools/net5.0/any/BoogieDriver.pdb": {},
+          "tools/net5.0/any/BoogieDriver.runtimeconfig.json": {},
+          "tools/net5.0/any/DotnetToolSettings.xml": {},
+          "tools/net5.0/any/System.Configuration.ConfigurationManager.dll": {},
+          "tools/net5.0/any/System.Runtime.Caching.dll": {},
+          "tools/net5.0/any/System.Security.Cryptography.ProtectedData.dll": {},
+          "tools/net5.0/any/System.Security.Permissions.dll": {},
+          "tools/net5.0/any/runtimes/unix/lib/netcoreapp2.0/System.Runtime.Caching.dll": {},
+          "tools/net5.0/any/runtimes/win/lib/netcoreapp2.0/System.Runtime.Caching.dll": {},
+          "tools/net5.0/any/runtimes/win/lib/netstandard2.0/System.Security.Cryptography.ProtectedData.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Boogie/2.9.0": {
+      "sha512": "vsMOwP/XwUUQhwU4txpPUM/lamnCrz3dnO0Untg8n2dWPWDfeZgwQN9QfSQYgSFvv5ovNi7K7s2AY1K/slQXsA==",
+      "type": "package",
+      "path": "boogie/2.9.0",
+      "hasTools": true,
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.txt",
+        "boogie.2.9.0.nupkg.sha512",
+        "boogie.nuspec",
+        "tools/net5.0/any/Boogie.AbsInt.dll",
+        "tools/net5.0/any/Boogie.AbsInt.pdb",
+        "tools/net5.0/any/Boogie.BaseTypes.dll",
+        "tools/net5.0/any/Boogie.BaseTypes.pdb",
+        "tools/net5.0/any/Boogie.CodeContractsExtender.dll",
+        "tools/net5.0/any/Boogie.CodeContractsExtender.pdb",
+        "tools/net5.0/any/Boogie.Concurrency.dll",
+        "tools/net5.0/any/Boogie.Concurrency.pdb",
+        "tools/net5.0/any/Boogie.Core.dll",
+        "tools/net5.0/any/Boogie.Core.pdb",
+        "tools/net5.0/any/Boogie.ExecutionEngine.dll",
+        "tools/net5.0/any/Boogie.ExecutionEngine.pdb",
+        "tools/net5.0/any/Boogie.Graph.dll",
+        "tools/net5.0/any/Boogie.Graph.pdb",
+        "tools/net5.0/any/Boogie.Houdini.dll",
+        "tools/net5.0/any/Boogie.Houdini.pdb",
+        "tools/net5.0/any/Boogie.Model.dll",
+        "tools/net5.0/any/Boogie.Model.pdb",
+        "tools/net5.0/any/Boogie.Predication.dll",
+        "tools/net5.0/any/Boogie.Predication.pdb",
+        "tools/net5.0/any/Boogie.Provers.SMTLib.dll",
+        "tools/net5.0/any/Boogie.Provers.SMTLib.pdb",
+        "tools/net5.0/any/Boogie.VCExpr.dll",
+        "tools/net5.0/any/Boogie.VCExpr.pdb",
+        "tools/net5.0/any/Boogie.VCGeneration.dll",
+        "tools/net5.0/any/Boogie.VCGeneration.pdb",
+        "tools/net5.0/any/BoogieDriver.deps.json",
+        "tools/net5.0/any/BoogieDriver.dll",
+        "tools/net5.0/any/BoogieDriver.pdb",
+        "tools/net5.0/any/BoogieDriver.runtimeconfig.json",
+        "tools/net5.0/any/DotnetToolSettings.xml",
+        "tools/net5.0/any/System.Configuration.ConfigurationManager.dll",
+        "tools/net5.0/any/System.Runtime.Caching.dll",
+        "tools/net5.0/any/System.Security.Cryptography.ProtectedData.dll",
+        "tools/net5.0/any/System.Security.Permissions.dll",
+        "tools/net5.0/any/runtimes/unix/lib/netcoreapp2.0/System.Runtime.Caching.dll",
+        "tools/net5.0/any/runtimes/win/lib/netcoreapp2.0/System.Runtime.Caching.dll",
+        "tools/net5.0/any/runtimes/win/lib/netstandard2.0/System.Security.Cryptography.ProtectedData.dll"
+      ]
+    }
+  },
+  "projectFileDependencyGroups": {
+    "net5.0": [
+      "boogie >= 2.9.0"
+    ]
+  },
+  "packageFolders": {
+    "/home/tacas22/.dotnet/tools/.store/.stage/4cfia5un.w2t": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "/tmp/fz1szf5r.ude/restore.csproj",
+      "projectName": "restore",
+      "projectPath": "/tmp/fz1szf5r.ude/restore.csproj",
+      "packagesPath": "/home/tacas22/.dotnet/tools/.store/.stage/4cfia5un.w2t",
+      "outputPath": "/home/tacas22/.dotnet/tools/.store/.stage/4cfia5un.w2t/",
+      "projectStyle": "DotnetToolReference",
+      "configFilePaths": [
+        "/home/tacas22/.nuget/NuGet/NuGet.Config"
+      ],
+      "originalTargetFrameworks": [
+        "net5.0"
+      ],
+      "sources": {
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "projectReferences": {}
+        }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
+      }
+    },
+    "frameworks": {
+      "net5.0": {
+        "targetAlias": "net5.0",
+        "dependencies": {
+          "boogie": {
+            "target": "Package",
+            "version": "[2.9.0, )"
+          }
+        },
+        "imports": [
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48"
+        ],
+        "assetTargetFallback": true,
+        "warn": true,
+        "runtimeIdentifierGraphPath": "/home/tacas22/.dotnet/sdk/5.0.208/RuntimeIdentifierGraph.json"
+      }
+    },
+    "runtimes": {
+      "any": {
+        "#import": []
+      }
+    }
+  }
+}

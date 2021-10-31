@@ -1,0 +1,31 @@
+#!/bin/bash
+
+WORKSPACE="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+
+# mvp 
+MVP=${WORKSPACE}/mvp-v1
+
+# diem framework code 
+DIEM=${WORKSPACE}/data/diem-v1
+
+function verify() {
+  num_inv="$(grep -E '( invariant )|( invariant<.*> )' $1 | wc -l)"
+  num_vc="$(grep -E '( aborts_if )|( ensures )|( requires )' $1 | wc -l)"
+  echo "Number of invariants: ${num_inv}"
+  echo "Number of verification conditions: ${num_vc}"
+
+  ${MVP} $1 -d ${DIEM} --cores 1
+}
+
+if [ "$#" -eq 0 ]
+then
+  for entry in "${DIEM}"/*
+  do
+    verify $entry
+  done
+else
+  for entry in "$@"
+  do
+    verify $entry
+  done    
+fi
