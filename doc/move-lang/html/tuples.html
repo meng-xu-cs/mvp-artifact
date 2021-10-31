@@ -1,0 +1,234 @@
+<!DOCTYPE HTML>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Tuples and Unit - </title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <base href="">
+
+        <link rel="stylesheet" href="book.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <link rel="shortcut icon" href="favicon.png">
+
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme -->
+        
+
+        
+
+        <!-- Fetch Clipboard.js from CDN but have a local fallback -->
+        <script src="https://cdn.jsdelivr.net/clipboard.js/1.6.1/clipboard.min.js"></script>
+        <script>
+            if (typeof Clipboard == 'undefined') {
+                document.write(unescape("%3Cscript src='clipboard.min.js'%3E%3C/script%3E"));
+            }
+        </script>
+
+        <!-- Fetch JQuery from CDN but have a local fallback -->
+        <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+        <script>
+            if (typeof jQuery == 'undefined') {
+                document.write(unescape("%3Cscript src='jquery.js'%3E%3C/script%3E"));
+            }
+        </script>
+
+        <!-- Fetch store.js from local - TODO add CDN when 2.x.x is available on cdnjs -->
+        <script src="store.js"></script>
+
+    </head>
+    <body class="light">
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme = store.get('mdbook-theme');
+            if (theme === null || theme === undefined) { theme = 'light'; }
+            $('body').removeClass().addClass(theme);
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var sidebar = store.get('mdbook-sidebar');
+            if (sidebar === "hidden") { $("html").addClass("sidebar-hidden") }
+            else if (sidebar === "visible") { $("html").addClass("sidebar-visible") }
+        </script>
+
+        <div id="sidebar" class="sidebar">
+            <ul class="chapter"><li class="affix"><a href="introduction.html">Introduction</a></li><li><a href="modules-and-scripts.html"><strong>1.</strong> Modules and Scripts</a></li><li><a href="creating-coins.html"><strong>2.</strong> First Tutorial: Creating Coins</a></li><li><a href="integers.html"><strong>3.</strong> Integers</a></li><li><a href="bool.html"><strong>4.</strong> Bool</a></li><li><a href="address.html"><strong>5.</strong> Address</a></li><li><a href="vector.html"><strong>6.</strong> Vector</a></li><li><a href="signer.html"><strong>7.</strong> Signer</a></li><li><a href="references.html"><strong>8.</strong> References</a></li><li><a href="tuples.html" class="active"><strong>9.</strong> Tuples and Unit</a></li><li><a href="variables.html"><strong>10.</strong> Local Variables and Scopes</a></li><li><a href="equality.html"><strong>11.</strong> Equality</a></li><li><a href="abort-and-assert.html"><strong>12.</strong> Abort and Assert</a></li><li><a href="conditionals.html"><strong>13.</strong> Conditionals</a></li><li><a href="loops.html"><strong>14.</strong> While and Loop</a></li><li><a href="functions.html"><strong>15.</strong> Functions</a></li><li><a href="structs-and-resources.html"><strong>16.</strong> Structs and Resources</a></li><li><a href="constants.html"><strong>17.</strong> Constants</a></li><li><a href="generics.html"><strong>18.</strong> Generics</a></li><li><a href="abilities.html"><strong>19.</strong> Type Abilities</a></li><li><a href="uses.html"><strong>20.</strong> Uses and Aliases</a></li><li><a href="friends.html"><strong>21.</strong> Friends</a></li><li><a href="global-storage-structure.html"><strong>22.</strong> Global Storage Structure</a></li><li><a href="global-storage-operators.html"><strong>23.</strong> Global Storage Operators</a></li><li><a href="standard-library.html"><strong>24.</strong> Standard Library</a></li><li><a href="coding-conventions.html"><strong>25.</strong> Coding Conventions</a></li></ul>
+        </div>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page" tabindex="-1">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div class="left-buttons">
+                        <i id="sidebar-toggle" class="fa fa-bars" title="Toggle sidebar"></i>
+                        <i id="theme-toggle" class="fa fa-paint-brush" title="Change theme"></i>
+                    </div>
+
+                    <h1 class="menu-title"></h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html">
+                            <i id="print-button" class="fa fa-print" title="Print this book"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="content" class="content">
+                    <a class="header" href="tuples.html#tuples-and-unit" id="tuples-and-unit"><h1>Tuples and Unit</h1></a>
+<p>Move does not fully support tuples as one might expect coming from another language with them as a first-class value. However, in order to support multiple return values, Move has tuple-like expressions. These expressions do not result in a concrete value at runtime (there are no tuples in the bytecode), and as a result they are very limited: they can only appear in expressions (usually in the return position for a function); they cannot be bound to local variables; they cannot be stored in structs; and tuple types cannot be used to instantiate generics.</p>
+<p>Similarly, unit <code>()</code> is a type created by the Move source language in order to be expression based. The unit value <code>()</code> does not result in any runtime value. We can consider unit<code>()</code> to be an empty tuple, and any restrictions that apply to tuples also apply to unit.</p>
+<p>It might feel weird to have tuples in the language at all given these restrictions. But one of the most common use cases for tuples in other languages is for functions to allow functions to return multiple values. Some languages work around this by forcing the users to write structs that contain the multiple return values. However in Move, you cannot put references inside of <a href="./structs-and-resources.md">structs</a>. This required Move to support multiple return values. These multiple return values are all pushed on the stack at the bytecode level. At the source level, these multiple return values are represented using tuples.</p>
+<a class="header" href="tuples.html#literals" id="literals"><h2>Literals</h2></a>
+<p>Tuples are created by a comma separated list of expressions inside of parentheses</p>
+<table><thead><tr><th>Syntax </th><th> Type </th><th> Description </th></tr></thead><tbody>
+<tr><td> <code>()</code>     </td><td> <code>(): ()</code> </td><td> Unit, the empty tuple, or the tuple of arity 0</td></tr>
+<tr><td> <code>(e0, ..., en)</code> </td><td><code>(e0, ..., en): (T0, ..., Tn)</code> where <code>e_i: Ti</code> s.t. <code>0 &lt;= i &lt;= n</code> and <code>n &gt; 0</code> </td><td> A <code>n</code>-tuple, a tuple of arity <code>n</code>, a tuple with <code>n</code> elements</td></tr>
+</tbody></table>
+<p>Note that <code>(e)</code> does not have type <code>(e): (t)</code>, in other words there is no tuple with one element. If there is only a single element inside of the parentheses, the parentheses are only used for disambiguation and do not carry any other special meaning.</p>
+<p>Sometimes, tuples with two elements are called &quot;pairs&quot; and tuples with three elements are called &quot;triples.&quot;</p>
+<a class="header" href="tuples.html#examples" id="examples"><h3>Examples</h3></a>
+<pre><code class="language-move=">address 0x42 {
+module Example {
+    // all 3 of these functions are equivalent
+
+    // when no return type is provided, it is assumed to be `()`
+    fun returs_unit_1() { }
+
+    // there is an implicit () value in empty expression blocks
+    fun returs_unit_2(): () { }
+
+    // explicit version of `returs_unit_1` and `returs_unit_2`
+    fun returs_unit_3(): () { () }
+
+
+    fun returns_3_values(): (u64, bool, address) {
+        (0, false, @0x42)
+    }
+    fun returns_4_values(x: &amp;u64): (&amp;u64, u8, u128, vector&lt;u8&gt;) {
+        (x, 0, 1, b&quot;foobar&quot;)
+    }
+}
+}
+</code></pre>
+<a class="header" href="tuples.html#operations" id="operations"><h2>Operations</h2></a>
+<p>The only operation that can be done on tuples currently is destructuring.</p>
+<a class="header" href="tuples.html#destructuring" id="destructuring"><h3>Destructuring</h3></a>
+<p>For tuples of any size, they can be destructured in either a <code>let</code> binding or in an assignment.</p>
+<p>For example:</p>
+<pre><code class="language-move=">address 0x42 {
+module Example {
+    // all 3 of these functions are equivalent
+    fun returns_unit() {}
+    fun returns_2_values(): (bool, bool) { (true, false) }
+    fun returns_4_values(x: &amp;u64): (&amp;u64, u8, u128, vector&lt;u8&gt;) { (x, 0, 1, b&quot;foobar&quot;) }
+
+    fun examples(cond: bool) {
+        let () = ();
+        let (x, y): (u8, u64) = (0, 1);
+        let (a, b, c, d) = (@0x0, 0, false, b&quot;&quot;);
+
+        () = ();
+        (x, y) = if (cond) (1, 2) else (3, 4);
+        (a, b, c, d) = (@0x1, 1, true, b&quot;1&quot;);
+    }
+
+    fun examples_with_function_calls() {
+        let () = returns_unit();
+        let (x, y): (bool, bool) = returns_2_values();
+        let (a, b, c, d) = returns_4_values(&amp;0);
+
+        () = returns_unit();
+        (x, y) = returns_2_values();
+        (a, b, c, d) = returns_4_values(&amp;1);
+    }
+}
+}
+</code></pre>
+<p>For more details, see <a href="./variables.md">Move Variables</a>.</p>
+<a class="header" href="tuples.html#subtyping" id="subtyping"><h2>Subtyping</h2></a>
+<p>Along with references, tuples are the only types that have subtyping in Move. Tuples do have subtyping only in the sense that subtype with references (in a covariant way).</p>
+<p>For example</p>
+<pre><code class="language-move=">let x: &amp;u64 = &amp;0;
+let y: &amp;mut u64 = &amp;mut 1;
+
+// (&amp;u64, &amp;mut u64) is a subtype of (&amp;u64, &amp;u64)
+//   since &amp;mut u64 is a subtype of &amp;u64
+let (a, b): (&amp;u64, &amp;u64) = (x, y);
+// (&amp;mut u64, &amp;mut u64) is a subtype of (&amp;u64, &amp;u64)
+//   since &amp;mut u64 is a subtype of &amp;u64
+let (c, d): (&amp;u64, &amp;u64) = (y, y);
+// error! (&amp;u64, &amp;mut u64) is NOT a subtype of (&amp;mut u64, &amp;mut u64)
+//   since &amp;u64 is NOT a subtype of &amp;mut u64
+let (e, f): (&amp;mut u64, &amp;mut u64) = (x, y);
+</code></pre>
+<a class="header" href="tuples.html#ownership" id="ownership"><h2>Ownership</h2></a>
+<p>As mentioned above, tuple values don't really exist at runtime. And currently they cannot be stored into local variables because of this (but it is likely that this feature will come soon). As such, tuples can only be moved currently, as copying them would require putting them into a local variable first.</p>
+
+                </div>
+
+                <!-- Mobile navigation buttons -->
+                
+                    <a rel="prev" href="references.html" class="mobile-nav-chapters previous" title="Previous chapter">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a rel="next" href="variables.html" class="mobile-nav-chapters next" title="Next chapter">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+
+            </div>
+
+            
+                <a href="references.html" class="nav-chapters previous" title="You can navigate through the chapters using the arrow keys">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+            
+
+            
+                <a href="variables.html" class="nav-chapters next" title="You can navigate through the chapters using the arrow keys">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            
+
+        </div>
+
+
+        <!-- Local fallback for Font Awesome -->
+        <script>
+            if ($(".fa").css("font-family") !== "FontAwesome") {
+                $('<link rel="stylesheet" type="text/css" href="_FontAwesome/css/font-awesome.css">').prependTo('head');
+            }
+        </script>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        
+
+        
+
+        
+
+        
+
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS script -->
+        
+
+    </body>
+</html>

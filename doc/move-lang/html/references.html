@@ -1,0 +1,295 @@
+<!DOCTYPE HTML>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>References - </title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <base href="">
+
+        <link rel="stylesheet" href="book.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <link rel="shortcut icon" href="favicon.png">
+
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme -->
+        
+
+        
+
+        <!-- Fetch Clipboard.js from CDN but have a local fallback -->
+        <script src="https://cdn.jsdelivr.net/clipboard.js/1.6.1/clipboard.min.js"></script>
+        <script>
+            if (typeof Clipboard == 'undefined') {
+                document.write(unescape("%3Cscript src='clipboard.min.js'%3E%3C/script%3E"));
+            }
+        </script>
+
+        <!-- Fetch JQuery from CDN but have a local fallback -->
+        <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+        <script>
+            if (typeof jQuery == 'undefined') {
+                document.write(unescape("%3Cscript src='jquery.js'%3E%3C/script%3E"));
+            }
+        </script>
+
+        <!-- Fetch store.js from local - TODO add CDN when 2.x.x is available on cdnjs -->
+        <script src="store.js"></script>
+
+    </head>
+    <body class="light">
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme = store.get('mdbook-theme');
+            if (theme === null || theme === undefined) { theme = 'light'; }
+            $('body').removeClass().addClass(theme);
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var sidebar = store.get('mdbook-sidebar');
+            if (sidebar === "hidden") { $("html").addClass("sidebar-hidden") }
+            else if (sidebar === "visible") { $("html").addClass("sidebar-visible") }
+        </script>
+
+        <div id="sidebar" class="sidebar">
+            <ul class="chapter"><li class="affix"><a href="introduction.html">Introduction</a></li><li><a href="modules-and-scripts.html"><strong>1.</strong> Modules and Scripts</a></li><li><a href="creating-coins.html"><strong>2.</strong> First Tutorial: Creating Coins</a></li><li><a href="integers.html"><strong>3.</strong> Integers</a></li><li><a href="bool.html"><strong>4.</strong> Bool</a></li><li><a href="address.html"><strong>5.</strong> Address</a></li><li><a href="vector.html"><strong>6.</strong> Vector</a></li><li><a href="signer.html"><strong>7.</strong> Signer</a></li><li><a href="references.html" class="active"><strong>8.</strong> References</a></li><li><a href="tuples.html"><strong>9.</strong> Tuples and Unit</a></li><li><a href="variables.html"><strong>10.</strong> Local Variables and Scopes</a></li><li><a href="equality.html"><strong>11.</strong> Equality</a></li><li><a href="abort-and-assert.html"><strong>12.</strong> Abort and Assert</a></li><li><a href="conditionals.html"><strong>13.</strong> Conditionals</a></li><li><a href="loops.html"><strong>14.</strong> While and Loop</a></li><li><a href="functions.html"><strong>15.</strong> Functions</a></li><li><a href="structs-and-resources.html"><strong>16.</strong> Structs and Resources</a></li><li><a href="constants.html"><strong>17.</strong> Constants</a></li><li><a href="generics.html"><strong>18.</strong> Generics</a></li><li><a href="abilities.html"><strong>19.</strong> Type Abilities</a></li><li><a href="uses.html"><strong>20.</strong> Uses and Aliases</a></li><li><a href="friends.html"><strong>21.</strong> Friends</a></li><li><a href="global-storage-structure.html"><strong>22.</strong> Global Storage Structure</a></li><li><a href="global-storage-operators.html"><strong>23.</strong> Global Storage Operators</a></li><li><a href="standard-library.html"><strong>24.</strong> Standard Library</a></li><li><a href="coding-conventions.html"><strong>25.</strong> Coding Conventions</a></li></ul>
+        </div>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page" tabindex="-1">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div class="left-buttons">
+                        <i id="sidebar-toggle" class="fa fa-bars" title="Toggle sidebar"></i>
+                        <i id="theme-toggle" class="fa fa-paint-brush" title="Change theme"></i>
+                    </div>
+
+                    <h1 class="menu-title"></h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html">
+                            <i id="print-button" class="fa fa-print" title="Print this book"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="content" class="content">
+                    <a class="header" href="references.html#references" id="references"><h1>References</h1></a>
+<p>Move has two types of references: immutable <code>&amp;</code> and mutable <code>&amp;mut</code>. Immutable references are read only, and cannot modify the underlying value (or any of its fields). Mutable references allow for modifications via a write through that reference. Move's type system enforces an ownership discipline that prevents reference errors.</p>
+<p>For more details on the rules of references, see <a href="./structs-and-resources.md">Structs and Resources</a></p>
+<a class="header" href="references.html#reference-operators" id="reference-operators"><h2>Reference Operators</h2></a>
+<p>Move provides operators for creating and extending references as well as converting a mutable reference to an immutable one. Here and elsewhere, we use the notation <code>e: T</code> for &quot;expression <code>e</code> has type <code>T</code>&quot;.</p>
+<table><thead><tr><th> Syntax </th><th> Type </th><th> Description</th></tr></thead><tbody>
+<tr><td> <code>&amp;e</code>       </td><td> <code>&amp;T</code> where <code>e: T</code> and <code>T</code> is a non-reference type </td><td> Create an immutable reference to <code>e</code></td></tr>
+<tr><td> <code>&amp;mut e</code>   </td><td> <code>&amp;mut T</code> where <code>e: T</code> and <code>T</code> is a non-reference type </td><td> Create a mutable reference to <code>e</code>.</td></tr>
+<tr><td> <code>&amp;e.f</code>  </td><td> <code>&amp;T</code> where <code>e.f: T</code> </td><td> Create an immutable reference to field <code>f</code> of struct <code>e</code>.</td></tr>
+<tr><td> <code>&amp;mut e.f</code>  </td><td> <code>&amp;mut T</code> where <code>e.f: T</code> </td><td> Create a mutable reference to field <code>f</code> of struct<code>e</code>.</td></tr>
+<tr><td> <code>freeze(e)</code> </td><td> <code>&amp;T</code> where <code>e: &amp;mut T</code> </td><td> Convert the mutable reference <code>e</code> into an immutable reference.</td></tr>
+</tbody></table>
+<p>The <code>&amp;e.f</code> and <code>&amp;mut e.f</code> operators can be used both to create a new reference into a struct or to extend an existing reference:</p>
+<pre><code class="language-move">let s = S { f: 10 };
+let f_ref1: &amp;u64 = &amp;s.f; // works
+let s_ref: &amp;S = &amp;s;
+let f_ref2: &amp;u64 = &amp;s_ref.f // also works
+</code></pre>
+<p>A reference expression with multiple fields works as long as both structs are in the same module:</p>
+<pre><code class="language-move">struct A { b: B }
+struct B { c : u64 }
+fun f(a: &amp;A): &amp;u64 {
+  &amp;a.b.c
+}
+</code></pre>
+<p>Finally, note that references to references are not allowed:</p>
+<pre><code class="language-move">let x = 7;
+let y: &amp;u64 = &amp;x;
+let z: &amp;&amp;u64 = &amp;y; // will not compile
+</code></pre>
+<a class="header" href="references.html#reading-and-writing-through-references" id="reading-and-writing-through-references"><h2>Reading and Writing Through References</h2></a>
+<p>Both mutable and immutable references can be read to produce a copy of the referenced value.</p>
+<p>Only mutable references can be written. A write <code>*x = v</code> discards the value previously stored in <code>x</code> and updates it with <code>v</code>.</p>
+<p>Both operations use the C-like <code>*</code> syntax. However, note that a read is an expression, whereas a write is a mutation that must occur on the left hand side of an equals.</p>
+<table><thead><tr><th> Syntax </th><th> Type </th><th> Description</th></tr></thead><tbody>
+<tr><td> <code>*e</code> </td><td> <code>T</code> where <code>e</code> is <code>&amp;T</code> or <code>&amp;mut T</code> </td><td> Read the value pointed to by <code>e</code></td></tr>
+<tr><td> <code>*e1 = e2</code> </td><td> <code>()</code> where <code>e1: &amp;mut T</code> and <code>e2: T</code> </td><td> Update the value in <code>e1</code> with <code>e2</code>.</td></tr>
+</tbody></table>
+<p>In order for a reference to be read, the underlying type must have the <a href="./abilities.md"><code>copy</code> ability</a> as reading the reference creates a new copy of the value.
+This rule prevents the copying of resource values:</p>
+<pre><code class="language-move=">fun copy_resource_via_ref_bad(c: Coin) {
+    let c_ref = &amp;c;
+    let counterfeit: Coin = *c_ref; // not allowed!
+    pay(c);
+    pay(counterfeit);
+}
+</code></pre>
+<p>Dually: in order for a reference to be written to, the underlying type must have the <a href="./abilities.md"><code>drop</code> ability</a> as writing to the reference will discard (or &quot;drop&quot;) the old value.
+This rule prevents the destruction of resource values:</p>
+<pre><code class="language-move=">fun destroy_resource_via_ref_bad(ten_coins: Coin, c: Coin) {
+    let ref = &amp;mut ten_coins;
+    *ref = c; // not allowed--would destroy 10 coins!
+}
+</code></pre>
+<a class="header" href="references.html#freeze-inference" id="freeze-inference"><h2><code>freeze</code> inference</h2></a>
+<p>A mutable reference can be used in a context where an immutable reference is expected:</p>
+<pre><code class="language-move">let x = 7;
+let y: &amp;mut u64 = &amp;mut x;
+</code></pre>
+<p>This works because the under the hood, the compiler inserts <code>freeze</code> instructions where they are needed. Here are a few more examples of <code>freeze</code> inference in action:</p>
+<pre><code class="language-move=">fun takes_immut_returns_immut(x: &amp;u64): &amp;u64 { x }
+
+// freeze inference on return value
+fun takes_mut_returns_immut(x: &amp;mut u64): &amp;u64 { x }
+
+fun expression_examples() {
+    let x = 0;
+    let y = 0;
+    takes_immut_returns_immut(&amp;x); // no inference
+    takes_immut_returns_immut(&amp;mut x); // inferred freeze(&amp;mut x)
+    takes_mut_returns_immut(&amp;mut x); // no inference
+
+    assert(&amp;x == &amp;mut y, 42); // inferred freeze(&amp;mut y)
+}
+
+fun assignment_examples() {
+    let x = 0;
+    let y = 0;
+    let imm_ref: &amp;u64 = &amp;x;
+
+    imm_ref = &amp;x; // no inference
+    imm_ref = &amp;mut y; // inferred freeze(&amp;mut y)
+}
+</code></pre>
+<a class="header" href="references.html#subtyping" id="subtyping"><h3>Subtyping</h3></a>
+<p>With this <code>freeze</code> inference, the Move type checker can view <code>&amp;mut T</code> as a subtype of <code>&amp;T</code>. As shown above, this means that anywhere for any expression where a <code>&amp;T</code> value is used, a <code>&amp;mut T</code> value can also be used. This terminology is used in error messages to concisely indicate that a <code>&amp;mut T</code> was needed where a <code>&amp;T</code> was supplied. For example</p>
+<pre><code class="language-move=">address 0x42 {
+module Example {
+    fun read_and_assign(store: &amp;mut u64, new_value: &amp;u64) {
+        *store = *new_value
+    }
+
+    fun subtype_examples() {
+        let x: &amp;u64 = &amp;0;
+        let y: &amp;mut u64 = &amp;mut 1;
+
+        x = &amp;mut 1; // valid
+        y = &amp;2; // invalid!
+
+        read_and_assign(y, x); // valid
+        read_and_assign(x, y); // invalid!
+    }
+}
+}
+</code></pre>
+<p>will yield the following error messages</p>
+<pre><code class="language-text">error:
+
+    ┌── example.move:12:9 ───
+    │
+ 12 │         y = &amp;2; // invalid!
+    │         ^ Invalid assignment to local 'y'
+    ·
+ 12 │         y = &amp;2; // invalid!
+    │             -- The type: '&amp;{integer}'
+    ·
+  9 │         let y: &amp;mut u64 = &amp;mut 1;
+    │                -------- Is not a subtype of: '&amp;mut u64'
+    │
+
+error:
+
+    ┌── example.move:15:9 ───
+    │
+ 15 │         read_and_assign(x, y); // invalid!
+    │         ^^^^^^^^^^^^^^^^^^^^^ Invalid call of '0x42::Example::read_and_assign'. Invalid argument for parameter 'store'
+    ·
+  8 │         let x: &amp;u64 = &amp;0;
+    │                ---- The type: '&amp;u64'
+    ·
+  3 │     fun read_and_assign(store: &amp;mut u64, new_value: &amp;u64) {
+    │                                -------- Is not a subtype of: '&amp;mut u64'
+    │
+</code></pre>
+<p>The only other types currently that has subtyping are <a href="./tuples.md">tuples</a></p>
+<a class="header" href="references.html#ownership" id="ownership"><h2>Ownership</h2></a>
+<p>Both mutable and immutable references can always be copied and extended <em>even if there are existing copies or extensions of the same reference</em>:</p>
+<pre><code class="language-move">fun reference_copies(s: &amp;mut S) {
+  let s_copy1 = s; // ok
+  let s_extension = &amp;mut s.f; // also ok
+  let s_copy2 = s; // still ok
+  ...
+}
+</code></pre>
+<p>This might be surprising for programmers familiar with Rust's ownership system, which would reject the code above. Move's type system is more permissive in its treatment of <a href="./variables.md#move-and-copy">copies</a>, but equally strict in ensuring unique ownership of mutable references before writes.</p>
+<a class="header" href="references.html#references-cannot-be-stored" id="references-cannot-be-stored"><h3>References Cannot Be Stored</h3></a>
+<p>References and tuples are the <em>only</em> types that cannot be stored as a field value of structs, which also means that they cannot exist in global storage. All references created during program execution will be destroyed when a Move program terminates; they are entirely ephemeral. This invariant is also true for values of types without the <code>store</code> <a href="./abilities.md">ability</a>, but note that references and tuples go a step further by never being allowed in structs in the first place.</p>
+<p>This is another difference between Move and Rust, which allows references to be stored inside of structs.</p>
+<p>Currently, Move cannot support this because references cannot be <a href="https://en.wikipedia.org/wiki/Serialization">serialized</a>, but <em>every Move value must be serializable</em>. This requirement comes from Move's <a href="./global-storage-structure.md">persistent global storage</a>, which needs to serialize values to persist them across program executions. Structs can be written to global storage, and thus they must be serializable.</p>
+<p>One could imagine a fancier, more expressive, type system that would allow references to be stored in structs <em>and</em> ban those structs from existing in global storage. We could perhaps allow references inside of structs that do not have the <code>store</code> <a href="./abilities.md">ability</a>, but that would not completely solve the problem: Move has a fairly complex system for tracking static reference safety, and this aspect of the type system would also have to be extended to support storing references inside of structs. In short, Move's type system (particularly the aspects around reference safety) would have to expand to support stored references. But it is something we are keeping an eye on as the language evolves.</p>
+
+                </div>
+
+                <!-- Mobile navigation buttons -->
+                
+                    <a rel="prev" href="signer.html" class="mobile-nav-chapters previous" title="Previous chapter">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a rel="next" href="tuples.html" class="mobile-nav-chapters next" title="Next chapter">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+
+            </div>
+
+            
+                <a href="signer.html" class="nav-chapters previous" title="You can navigate through the chapters using the arrow keys">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+            
+
+            
+                <a href="tuples.html" class="nav-chapters next" title="You can navigate through the chapters using the arrow keys">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            
+
+        </div>
+
+
+        <!-- Local fallback for Font Awesome -->
+        <script>
+            if ($(".fa").css("font-family") !== "FontAwesome") {
+                $('<link rel="stylesheet" type="text/css" href="_FontAwesome/css/font-awesome.css">').prependTo('head');
+            }
+        </script>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        
+
+        
+
+        
+
+        
+
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS script -->
+        
+
+    </body>
+</html>

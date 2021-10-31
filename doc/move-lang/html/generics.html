@@ -1,0 +1,516 @@
+<!DOCTYPE HTML>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Generics - </title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <base href="">
+
+        <link rel="stylesheet" href="book.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <link rel="shortcut icon" href="favicon.png">
+
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme -->
+        
+
+        
+
+        <!-- Fetch Clipboard.js from CDN but have a local fallback -->
+        <script src="https://cdn.jsdelivr.net/clipboard.js/1.6.1/clipboard.min.js"></script>
+        <script>
+            if (typeof Clipboard == 'undefined') {
+                document.write(unescape("%3Cscript src='clipboard.min.js'%3E%3C/script%3E"));
+            }
+        </script>
+
+        <!-- Fetch JQuery from CDN but have a local fallback -->
+        <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+        <script>
+            if (typeof jQuery == 'undefined') {
+                document.write(unescape("%3Cscript src='jquery.js'%3E%3C/script%3E"));
+            }
+        </script>
+
+        <!-- Fetch store.js from local - TODO add CDN when 2.x.x is available on cdnjs -->
+        <script src="store.js"></script>
+
+    </head>
+    <body class="light">
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme = store.get('mdbook-theme');
+            if (theme === null || theme === undefined) { theme = 'light'; }
+            $('body').removeClass().addClass(theme);
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var sidebar = store.get('mdbook-sidebar');
+            if (sidebar === "hidden") { $("html").addClass("sidebar-hidden") }
+            else if (sidebar === "visible") { $("html").addClass("sidebar-visible") }
+        </script>
+
+        <div id="sidebar" class="sidebar">
+            <ul class="chapter"><li class="affix"><a href="introduction.html">Introduction</a></li><li><a href="modules-and-scripts.html"><strong>1.</strong> Modules and Scripts</a></li><li><a href="creating-coins.html"><strong>2.</strong> First Tutorial: Creating Coins</a></li><li><a href="integers.html"><strong>3.</strong> Integers</a></li><li><a href="bool.html"><strong>4.</strong> Bool</a></li><li><a href="address.html"><strong>5.</strong> Address</a></li><li><a href="vector.html"><strong>6.</strong> Vector</a></li><li><a href="signer.html"><strong>7.</strong> Signer</a></li><li><a href="references.html"><strong>8.</strong> References</a></li><li><a href="tuples.html"><strong>9.</strong> Tuples and Unit</a></li><li><a href="variables.html"><strong>10.</strong> Local Variables and Scopes</a></li><li><a href="equality.html"><strong>11.</strong> Equality</a></li><li><a href="abort-and-assert.html"><strong>12.</strong> Abort and Assert</a></li><li><a href="conditionals.html"><strong>13.</strong> Conditionals</a></li><li><a href="loops.html"><strong>14.</strong> While and Loop</a></li><li><a href="functions.html"><strong>15.</strong> Functions</a></li><li><a href="structs-and-resources.html"><strong>16.</strong> Structs and Resources</a></li><li><a href="constants.html"><strong>17.</strong> Constants</a></li><li><a href="generics.html" class="active"><strong>18.</strong> Generics</a></li><li><a href="abilities.html"><strong>19.</strong> Type Abilities</a></li><li><a href="uses.html"><strong>20.</strong> Uses and Aliases</a></li><li><a href="friends.html"><strong>21.</strong> Friends</a></li><li><a href="global-storage-structure.html"><strong>22.</strong> Global Storage Structure</a></li><li><a href="global-storage-operators.html"><strong>23.</strong> Global Storage Operators</a></li><li><a href="standard-library.html"><strong>24.</strong> Standard Library</a></li><li><a href="coding-conventions.html"><strong>25.</strong> Coding Conventions</a></li></ul>
+        </div>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page" tabindex="-1">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div class="left-buttons">
+                        <i id="sidebar-toggle" class="fa fa-bars" title="Toggle sidebar"></i>
+                        <i id="theme-toggle" class="fa fa-paint-brush" title="Change theme"></i>
+                    </div>
+
+                    <h1 class="menu-title"></h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html">
+                            <i id="print-button" class="fa fa-print" title="Print this book"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="content" class="content">
+                    <a class="header" href="generics.html#generics" id="generics"><h1>Generics</h1></a>
+<p>Generics can be used to define functions and structs over different input data types. This language feature is sometimes referred to as <em>parametric polymorphism</em>. In Move, we will often use the term generics interchangeably with type parameters and type arguments.</p>
+<p>Generics are commonly used in library code, such as in Vector, to declare code that works over any possible instantiation (that satisfies the specified constraints). In other frameworks, generic code can sometimes be used to interact with global storage many different ways that all still share the same implementation.</p>
+<a class="header" href="generics.html#declaring-type-parameters" id="declaring-type-parameters"><h2>Declaring Type Parameters</h2></a>
+<p>Both functions and structs can take a list of type parameters in their signatures, enclosed by a pair of angle brackets <code>&lt;...&gt;</code>.</p>
+<a class="header" href="generics.html#generic-functions" id="generic-functions"><h3>Generic Functions</h3></a>
+<p>Type parameters for functions are placed after the function name and before the (value) parameter list. The following code defines a generic identity function that takes a value of any type and returns that value unchanged.</p>
+<pre><code class="language-move">fun id&lt;T&gt;(x: T): T {
+    // this type annotation is unnecessary but valid
+    (x: T)
+}
+</code></pre>
+<p>Once defined, the type parameter <code>T</code> can be used in parameter types, return types, and inside the function body.</p>
+<a class="header" href="generics.html#generic-structs" id="generic-structs"><h3>Generic Structs</h3></a>
+<p>Type parameters for structs are placed after the struct name, and can be used to name the types of the fields.</p>
+<pre><code class="language-move">struct Foo&lt;T&gt; has copy, drop { x: T }
+
+struct Bar&lt;T1, T2&gt; has copy, drop {
+    x: T1,
+    y: vector&lt;T2&gt;,
+}
+</code></pre>
+<p><a href="generics.html#unused-type-parameters">Note that type parameters do not have to be used</a></p>
+<a class="header" href="generics.html#type-arguments" id="type-arguments"><h2>Type Arguments</h2></a>
+<a class="header" href="generics.html#calling-generic-functions" id="calling-generic-functions"><h3>Calling Generic Functions</h3></a>
+<p>When calling a generic function, one can specify the type arguments for the function's type parameters in a list enclosed by a pair of angle brackets.</p>
+<pre><code class="language-move=">fun foo() {
+    let x = id&lt;bool&gt;(true);
+}
+</code></pre>
+<p>If you do not specify the type arguments, Move's <a href="generics.html#type-inference">type inference</a> will supply them for you.</p>
+<a class="header" href="generics.html#using-generic-structs" id="using-generic-structs"><h3>Using Generic Structs</h3></a>
+<p>Similarly, one can attach a list of type arguments for the struct's type parameters when constructing or destructing values of generic types.</p>
+<pre><code class="language-move=">fun foo() {
+    let foo = Foo&lt;bool&gt; { x: true };
+    let Foo&lt;bool&gt; { x } = foo;
+}
+</code></pre>
+<p>If you do not specify the type arguments, Move's <a href="generics.html#type-inference">type inference</a> will supply them for you.</p>
+<a class="header" href="generics.html#type-argument-mismatch" id="type-argument-mismatch"><h3>Type Argument Mismatch</h3></a>
+<p>If you specify the type arguments and they conflict with the actual values supplied, an error will be given</p>
+<pre><code class="language-move=">fun foo() {
+    let x = id&lt;u64&gt;(true); // error! true is not a u64
+}
+</code></pre>
+<p>and similarly</p>
+<pre><code class="language-move=">fun foo() {
+    let foo = Foo&lt;bool&gt; { x: 0 }; // error! 0 is not a bool
+    let Foo&lt;address&gt; { x } = foo; // error! bool is incompatible with address
+}
+</code></pre>
+<a class="header" href="generics.html#type-inference" id="type-inference"><h2>Type Inference</h2></a>
+<p>In most cases, the Move compiler will be able to infer the type arguments so you don't have to write them down explicitly. Here's what the examples above would look like if we omit the type arguments.</p>
+<pre><code class="language-move=">fun foo() {
+    let x = id(true);
+    //        ^ &lt;bool&gt; is inferred
+
+    let foo = Foo { x: true };
+    //           ^ &lt;bool&gt; is inferred
+
+    let Foo { x } = foo;
+    //     ^ &lt;bool&gt; is inferred
+}
+</code></pre>
+<p>Note: when the compiler is unable to infer the types, you'll need annotate them manually. A common scenario is to call a function with type parameters appearing only at return positions.</p>
+<pre><code class="language-move=">address 0x2 {
+module M {
+    using Std::Vector;
+
+    fun foo() {
+        // let v = Vector::new();
+        //                    ^ The compiler cannot figure out the element type.
+
+        let v = Vector::new&lt;u64&gt;();
+        //                 ^~~~~ Must annotate manually.
+    }
+}
+}
+</code></pre>
+<p>However, the compiler will be able to infer the type if that return value is used later in that function</p>
+<pre><code class="language-move=">address 0x2 {
+module M {
+    using Std::Vector;
+
+    fun foo() {
+        let v = Vector::new();
+        //                 ^ &lt;u64&gt; is inferred
+        Vector::push_back(&amp;mut v, 42);
+    }
+}
+}
+</code></pre>
+<a class="header" href="generics.html#unused-type-parameters" id="unused-type-parameters"><h2>Unused Type Parameters</h2></a>
+<p>For a struct definition,
+an unused type parameter is one that
+does not appear in any field defined in the struct,
+but is checked statically at compile time.
+Move allows unused type parameters so the following struct definition is valid:</p>
+<pre><code class="language-move=">struct Foo&lt;T&gt; {
+    foo: u64
+}
+</code></pre>
+<p>This can be convenient when modeling certain concepts. Here is an example:</p>
+<pre><code class="language-move=">address 0x2 {
+module M {
+    // Currency Specifiers
+    struct Currency1 {}
+    struct Currency2 {}
+
+    // A generic coin type that can be instantiated using a currency
+    // specifier type.
+    //   e.g. Coin&lt;Currency1&gt;, Coin&lt;Currency2&gt; etc.
+    struct Coin&lt;Currency&gt; has store {
+        value: u64
+    }
+
+    // Write code generically about all currencies
+    public fun mint_generic&lt;Currency&gt;(value: u64): Coin&lt;Currency&gt; {
+        Coin { value }
+    }
+
+    // Write code concretely about one currency
+    public fun mint_concrete(value: u64): Coin&lt;Currency1&gt; {
+        Coin { value }
+    }
+}
+}
+</code></pre>
+<p>In this example,
+<code>struct Coin&lt;Currency&gt;</code> is generic on the <code>Currency</code> type parameter,
+which specifies the currency of the coin and
+allows code to be written either
+generically on any currency or
+concretely on a specific currency.
+This genericity applies even when the <code>Currency</code> type parameter
+does not appear in any of the fields defined in <code>Coin</code>.</p>
+<a class="header" href="generics.html#phantom-type-parameters" id="phantom-type-parameters"><h3>Phantom Type Parameters</h3></a>
+<p>In the example above,
+although <code>struct Coin</code> asks for the <code>store</code> ability,
+neither <code>Coin&lt;Currency1&gt;</code> nor <code>Coin&lt;Currency2&gt;</code> will have the <code>store</code> ability.
+This is because of the rules for
+<a href="./abilities.md#conditional-abilities-and-generic-types">Conditional Abilities and Generic Types</a>
+and the fact that <code>Currency1</code> and <code>Currency2</code> don't have the <code>store</code> ability,
+despite the fact that they are not even used in the body of <code>struct Coin</code>.
+This might cause some unpleasant consequences.
+For example, we are unable to put <code>Coin&lt;Currency1&gt;</code> into a wallet in the global storage.</p>
+<p>One possible solution would be to
+add spurious ability annotations to <code>Currency1</code> and <code>Currency2</code>
+(i.e., <code>struct Currency1 has store {}</code>).
+But, this might lead to bugs or security vulnerabilities
+because it weakens the types with unnecessary ability declarations.
+For example, we would never expect a resource in the global storage to have a field in type <code>Currency1</code>,
+but this would be possible with the spurious <code>store</code> ability.
+Moreover, the spurious annotations would be infectious,
+requiring many functions generic on the unused type parameter to also include the necessary constraints.</p>
+<p>Phantom type parameters solve this problem.
+Unused type parameters can be marked as <em>phantom</em> type parameters,
+which do not participate in the ability derivation for structs.
+In this way,
+arguments to phantom type parameters are not considered when deriving the abilities for generic types,
+thus avoiding the need for spurious ability annotations.
+For this relaxed rule to be sound,
+Move's type system guarantees that a parameter declared as phantom is either
+not used at all in the struct definition, or
+it is only used as an argument to type parameters also declared as phantom.</p>
+<a class="header" href="generics.html#declaration" id="declaration"><h4>Declaration</h4></a>
+<p>In a struct definition
+a type parameter can be declared as phantom by adding the <code>phantom</code> keyword before its declaration.
+If a type parameter is declared as phantom we say it is a phantom type parameter.
+When defining a struct, Move's type checker ensures that every phantom type parameter is either
+not used inside the struct definition or
+it is only used as an argument to a phantom type parameter.</p>
+<p>More formally,
+if a type is used as an argument to a phantom type parameter
+we say the type appears in <em>phantom position</em>.
+With this definition in place,
+the rule for the correct use of phantom parameters can be specified as follows:
+<strong>A phantom type parameter can only appear in phantom position</strong>.</p>
+<p>The following two examples show valid uses of phantom parameters.
+In the first one,
+the parameter <code>T1</code> is not used at all inside the struct definition.
+In the second one, the parameter <code>T1</code> is only used as an argument to a phantom type parameter.</p>
+<pre><code class="language-move=">struct S1&lt;phantom T1, T2&gt; { f: u64 }
+                  ^^
+                  Ok: T1 does not appear inside the struct definition
+
+
+struct S2&lt;phantom T1, T2&gt; { f: S1&lt;T1, T2&gt; }
+                                  ^^
+                                  Ok: T1 appears in phantom position
+</code></pre>
+<p>The following code shows examples of violations of the rule:</p>
+<pre><code class="language-move=">struct S1&lt;phantom T&gt; { f: T }
+                          ^
+                          Error: Not a phantom position
+
+struct S2&lt;T&gt; { f: T }
+
+struct S3&lt;phantom T&gt; { f: S2&lt;T&gt; }
+                             ^
+                             Error: Not a phantom position
+</code></pre>
+<a class="header" href="generics.html#instantiation" id="instantiation"><h4>Instantiation</h4></a>
+<p>When instantiating a struct,
+the arguments to phantom parameters are excluded when deriving the struct abilities.
+For example, consider the following code:</p>
+<pre><code class="language-move=">struct S&lt;T1, phantom T2&gt; has copy { f: T1 }
+struct NoCopy {}
+struct HasCopy has copy {}
+</code></pre>
+<p>Consider now the type <code>S&lt;HasCopy, NoCopy&gt;</code>.
+Since <code>S</code> is defined with <code>copy</code> and all non-phantom arguments have copy
+then <code>S&lt;HasCopy, NoCopy&gt;</code> also has copy.</p>
+<a class="header" href="generics.html#phantom-type-parameters-with-ability-constraints" id="phantom-type-parameters-with-ability-constraints"><h4>Phantom Type Parameters with Ability Constraints</h4></a>
+<p>Ability constraints and phantom type parameters are orthogonal features in the sense that
+phantom parameters can be declared with ability constraints.
+When instantiating a phantom type parameter with an ability constraint,
+the type argument has to satisfy that constraint,
+even though the parameter is phantom.
+For example, the following definition is perfectly valid:</p>
+<pre><code class="language-move=">struct S&lt;phantom T: copy&gt; {}
+</code></pre>
+<p>The usual restrictions apply and <code>T</code> can only be instantiated with arguments having <code>copy</code>.</p>
+<a class="header" href="generics.html#constraints" id="constraints"><h2>Constraints</h2></a>
+<p>In the examples above, we have demonstrated how one can use type parameters to define &quot;unkonwn&quot; types that can be plugged in by callers at a later time. This however means the type system has little information about the type and has to perform checks in a very conservative way. In some sense, the type system must assume the worst case scenario for an unconstrained generic. Simply put, by default generic type parameters have no <a href="./abilities.md">abilities</a>.</p>
+<p>This is where constraints come into play: they offer a way to specify what properties these unknown types have so the type system can allow operations that would otherwise be unsafe.</p>
+<a class="header" href="generics.html#declaring-constraints" id="declaring-constraints"><h3>Declaring Constraints</h3></a>
+<p>Constraints can be imposed on type parameters using the following syntax.</p>
+<pre><code class="language-move=">// T is the name of the type parameter
+T: &lt;ability&gt; (+ &lt;ability&gt;)*
+</code></pre>
+<p>The <code>&lt;ability&gt;</code> can be any of the four <a href="./abilities.md">abilities</a>, and a type parameter can be constrained with multiple <a href="./abilities.md">abilities</a> at once. So all of the following would be valid type parameter declarations</p>
+<pre><code class="language-move">T: copy
+T: copy + drop
+T: copy + drop + store + key
+</code></pre>
+<a class="header" href="generics.html#verifying-constraints" id="verifying-constraints"><h3>Verifying Constraints</h3></a>
+<p>Constraints are checked at call sites so the following code won't compile.</p>
+<pre><code class="language-move=">struct Foo&lt;T: key&gt; { x: T }
+
+struct Bar { x: Foo&lt;u8&gt; }
+//                  ^ error! u8 does not have 'key'
+
+struct Baz&lt;T&gt; { x: Foo&lt;T&gt; }
+//                     ^ error! T does not have 'key'
+</code></pre>
+<pre><code class="language-move=">struct R {}
+
+fun unsafe_consume&lt;T&gt;(x: T) {
+    // error! x does not have 'drop'
+}
+
+fun consume&lt;T: drop&gt;(x: T) {
+    // valid!
+    // x will be dropped automatically
+}
+
+fun foo() {
+    let r = R {};
+    consume&lt;R&gt;(r);
+    //      ^ error! R does not have 'drop'
+}
+</code></pre>
+<pre><code class="language-move=">struct R {}
+
+fun unsafe_double&lt;T&gt;(x: T) {
+    (copy x, x)
+    // error! x does not have 'copy'
+}
+
+fun double&lt;T: copy&gt;(x: T) {
+    (copy x, x) // valid!
+}
+
+fun foo(): (R, R) {
+    let r = R {};
+    double&lt;R&gt;(r)
+    //     ^ error! R does not have copy
+}
+</code></pre>
+<p>For more information, see the abilities section on <a href="./abilities.html#conditional-abilities-and-generic-types">conditional abilities and generic types</a></p>
+<a class="header" href="generics.html#limitations-on-recursions" id="limitations-on-recursions"><h2>Limitations on Recursions</h2></a>
+<a class="header" href="generics.html#recursive-structs" id="recursive-structs"><h3>Recursive Structs</h3></a>
+<p>Generic structs can not contain fields of the same type, either directly or indirectly, even with different type arguments. All of the following struct definitions are invalid:</p>
+<pre><code class="language-move=">struct Foo&lt;T&gt; {
+    x: Foo&lt;u64&gt; // error! 'Foo' containing 'Foo'
+}
+
+struct Bar&lt;T&gt; {
+    x: Bar&lt;T&gt; // error! 'Bar' containing 'Bar'
+}
+
+// error! 'A' and 'B' forming a cycle, which is not allowed either.
+struct A&lt;T&gt; {
+    x: B&lt;T, u64&gt;
+}
+
+struct B&lt;T1, T2&gt; {
+    x: A&lt;T1&gt;
+    y: A&lt;T2&gt;
+}
+</code></pre>
+<a class="header" href="generics.html#advanced-topic-type-level-recursions" id="advanced-topic-type-level-recursions"><h3>Advanced Topic: Type-level Recursions</h3></a>
+<p>Move allows generic functions to be called recursively. However, when used in combination with generic structs, this could create an infinite number of types in certain cases, and allowing this means adding unnecessary complexity to the compiler, vm and other language components. Therefore, such recursions are forbidden.</p>
+<p>Allowed:</p>
+<pre><code class="language-move=">address 0x2 {
+module M {
+    struct A&lt;T&gt; {}
+
+    // Finitely many types -- allowed.
+    // foo&lt;T&gt; -&gt; foo&lt;T&gt; -&gt; foo&lt;T&gt; -&gt; ... is valid
+    fun foo&lt;T&gt;() {
+        foo&lt;T&gt;();
+    }
+
+    // Finitely many types -- allowed.
+    // foo&lt;T&gt; -&gt; foo&lt;A&lt;u64&gt;&gt; -&gt; foo&lt;A&lt;u64&gt;&gt; -&gt; ... is valid
+    fun foo&lt;T&gt;() {
+        foo&lt;A&lt;u64&gt;&gt;();
+    }
+}
+}
+</code></pre>
+<p>Not allowed:</p>
+<pre><code class="language-move=">address 0x2 {
+module M {
+    struct A&lt;T&gt; {}
+
+    // Infinitely many types -- NOT allowed.
+    // error!
+    // foo&lt;T&gt; -&gt; foo&lt;A&lt;T&gt;&gt; -&gt; foo&lt;A&lt;A&lt;T&gt;&gt;&gt; -&gt; ...
+    fun foo&lt;T&gt;() {
+        foo&lt;Foo&lt;T&gt;&gt;();
+    }
+}
+}
+</code></pre>
+<pre><code class="language-move=">address 0x2 {
+module N {
+    struct A&lt;T&gt; {}
+
+    // Infinitely many types -- NOT allowed.
+    // error!
+    // foo&lt;T1, T2&gt; -&gt; bar&lt;T2, T1&gt; -&gt; foo&lt;T2, A&lt;T1&gt;&gt;
+    //   -&gt; bar&lt;A&lt;T1&gt;, T2&gt; -&gt; foo&lt;A&lt;T1&gt;, A&lt;T2&gt;&gt;
+    //   -&gt; bar&lt;A&lt;T2&gt;, A&lt;T1&gt;&gt; -&gt; foo&lt;A&lt;T2&gt;, A&lt;A&lt;T1&gt;&gt;&gt;
+    //   -&gt; ...
+    fun foo&lt;T1, T2&gt;() {
+        bar&lt;T2, T1&gt;();
+    }
+
+    fun bar&lt;T1, T2&gt; {
+        foo&lt;T1, A&lt;T2&gt;&gt;();
+    }
+}
+}
+</code></pre>
+<p>Note, the check for type level recursions is based on a conservative analysis on the call sites and does NOT take control flow or runtime values into account.</p>
+<pre><code class="language-move=">address 0x2 {
+module M {
+    struct A&lt;T&gt; {}
+
+    fun foo&lt;T&gt;(n: u64) {
+        if (n &gt; 0) {
+            foo&lt;A&lt;T&gt;&gt;(n - 1);
+        };
+    }
+}
+}
+</code></pre>
+<p>The function in the example above will technically terminate for any given input and therefore only creating finitely many types, but it is still considered invalid by Move's type system.</p>
+
+                </div>
+
+                <!-- Mobile navigation buttons -->
+                
+                    <a rel="prev" href="constants.html" class="mobile-nav-chapters previous" title="Previous chapter">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a rel="next" href="abilities.html" class="mobile-nav-chapters next" title="Next chapter">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+
+            </div>
+
+            
+                <a href="constants.html" class="nav-chapters previous" title="You can navigate through the chapters using the arrow keys">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+            
+
+            
+                <a href="abilities.html" class="nav-chapters next" title="You can navigate through the chapters using the arrow keys">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            
+
+        </div>
+
+
+        <!-- Local fallback for Font Awesome -->
+        <script>
+            if ($(".fa").css("font-family") !== "FontAwesome") {
+                $('<link rel="stylesheet" type="text/css" href="_FontAwesome/css/font-awesome.css">').prependTo('head');
+            }
+        </script>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        
+
+        
+
+        
+
+        
+
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS script -->
+        
+
+    </body>
+</html>

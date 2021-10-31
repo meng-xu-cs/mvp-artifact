@@ -1,0 +1,260 @@
+<!DOCTYPE HTML>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Equality - </title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <base href="">
+
+        <link rel="stylesheet" href="book.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <link rel="shortcut icon" href="favicon.png">
+
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme -->
+        
+
+        
+
+        <!-- Fetch Clipboard.js from CDN but have a local fallback -->
+        <script src="https://cdn.jsdelivr.net/clipboard.js/1.6.1/clipboard.min.js"></script>
+        <script>
+            if (typeof Clipboard == 'undefined') {
+                document.write(unescape("%3Cscript src='clipboard.min.js'%3E%3C/script%3E"));
+            }
+        </script>
+
+        <!-- Fetch JQuery from CDN but have a local fallback -->
+        <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+        <script>
+            if (typeof jQuery == 'undefined') {
+                document.write(unescape("%3Cscript src='jquery.js'%3E%3C/script%3E"));
+            }
+        </script>
+
+        <!-- Fetch store.js from local - TODO add CDN when 2.x.x is available on cdnjs -->
+        <script src="store.js"></script>
+
+    </head>
+    <body class="light">
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme = store.get('mdbook-theme');
+            if (theme === null || theme === undefined) { theme = 'light'; }
+            $('body').removeClass().addClass(theme);
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var sidebar = store.get('mdbook-sidebar');
+            if (sidebar === "hidden") { $("html").addClass("sidebar-hidden") }
+            else if (sidebar === "visible") { $("html").addClass("sidebar-visible") }
+        </script>
+
+        <div id="sidebar" class="sidebar">
+            <ul class="chapter"><li class="affix"><a href="introduction.html">Introduction</a></li><li><a href="modules-and-scripts.html"><strong>1.</strong> Modules and Scripts</a></li><li><a href="creating-coins.html"><strong>2.</strong> First Tutorial: Creating Coins</a></li><li><a href="integers.html"><strong>3.</strong> Integers</a></li><li><a href="bool.html"><strong>4.</strong> Bool</a></li><li><a href="address.html"><strong>5.</strong> Address</a></li><li><a href="vector.html"><strong>6.</strong> Vector</a></li><li><a href="signer.html"><strong>7.</strong> Signer</a></li><li><a href="references.html"><strong>8.</strong> References</a></li><li><a href="tuples.html"><strong>9.</strong> Tuples and Unit</a></li><li><a href="variables.html"><strong>10.</strong> Local Variables and Scopes</a></li><li><a href="equality.html" class="active"><strong>11.</strong> Equality</a></li><li><a href="abort-and-assert.html"><strong>12.</strong> Abort and Assert</a></li><li><a href="conditionals.html"><strong>13.</strong> Conditionals</a></li><li><a href="loops.html"><strong>14.</strong> While and Loop</a></li><li><a href="functions.html"><strong>15.</strong> Functions</a></li><li><a href="structs-and-resources.html"><strong>16.</strong> Structs and Resources</a></li><li><a href="constants.html"><strong>17.</strong> Constants</a></li><li><a href="generics.html"><strong>18.</strong> Generics</a></li><li><a href="abilities.html"><strong>19.</strong> Type Abilities</a></li><li><a href="uses.html"><strong>20.</strong> Uses and Aliases</a></li><li><a href="friends.html"><strong>21.</strong> Friends</a></li><li><a href="global-storage-structure.html"><strong>22.</strong> Global Storage Structure</a></li><li><a href="global-storage-operators.html"><strong>23.</strong> Global Storage Operators</a></li><li><a href="standard-library.html"><strong>24.</strong> Standard Library</a></li><li><a href="coding-conventions.html"><strong>25.</strong> Coding Conventions</a></li></ul>
+        </div>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page" tabindex="-1">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div class="left-buttons">
+                        <i id="sidebar-toggle" class="fa fa-bars" title="Toggle sidebar"></i>
+                        <i id="theme-toggle" class="fa fa-paint-brush" title="Change theme"></i>
+                    </div>
+
+                    <h1 class="menu-title"></h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html">
+                            <i id="print-button" class="fa fa-print" title="Print this book"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="content" class="content">
+                    <a class="header" href="equality.html#equality" id="equality"><h1>Equality</h1></a>
+<p>Move supports two equality operations <code>==</code> and <code>!=</code></p>
+<a class="header" href="equality.html#operations" id="operations"><h2>Operations</h2></a>
+<table><thead><tr><th> Syntax   </th><th> Operation </th><th> Description</th></tr></thead><tbody>
+<tr><td> <code>==</code>     </td><td> equal     </td><td> Returns <code>true</code> if the two operands have the same value, <code>false</code> otherwise</td></tr>
+<tr><td> <code>!=</code>     </td><td> not equal </td><td> Returns <code>true</code> if the two operands have different values, <code>false</code> otherwise</td></tr>
+</tbody></table>
+<a class="header" href="equality.html#typing" id="typing"><h3>Typing</h3></a>
+<p>Both the equal (<code>==</code>) and not-equal (<code>!=</code>) operations only work if both operands are the same type</p>
+<pre><code class="language-move">0 == 0; // `true`
+1u128 == 2u128; // `false`
+b&quot;hello&quot; != x&quot;00&quot;; // `true`
+</code></pre>
+<p>Equality and non-equality also work over user defined types!</p>
+<pre><code class="language-move=">address 0x42 {
+module Example {
+    struct S has copy, drop { f: u64, s: vector&lt;u8&gt; }
+
+    fun always_true(): bool {
+        let s = S { f: 0, s: b&quot;&quot; };
+        // parens are not needed but added for clarity in this example
+        (copy s) == s
+    }
+
+    fun always_false(): bool {
+        let s = S { f: 0, s: b&quot;&quot; };
+        // parens are not needed but added for clarity in this example
+        (copy s) != s
+    }
+}
+}
+</code></pre>
+<p>If the operands have different types, there is a type checking error</p>
+<pre><code class="language-move">1u8 == 1u128; // ERROR!
+//     ^^^^^ expected an argument of type 'u8'
+b&quot;&quot; != 0; // ERROR!
+//     ^ expected an argument of type 'vector&lt;u8&gt;'
+</code></pre>
+<a class="header" href="equality.html#typing-with-references" id="typing-with-references"><h3>Typing with references</h3></a>
+<p>When comparing <a href="./references.md">references</a>, the type of the reference (immutable or mutable) does not matter. This means that you can compare an immutable <code>&amp;</code> reference with a mutable one <code>&amp;mut</code> of the same underlying type.</p>
+<pre><code class="language-move">let i = &amp;0;
+let m = &amp;mut 1;
+
+i == m; // `false`
+m == i; // `false`
+m == m; // `true`
+i == i; // `true`
+</code></pre>
+<p>The above is equivalent to applying an explicit freeze to each mutable reference where needed</p>
+<pre><code class="language-move">let i = &amp;0;
+let m = &amp;mut 1;
+
+i == freeze(m); // `false`
+freeze(m) == i; // `false`
+m == m; // `true`
+i == i; // `true`
+</code></pre>
+<p>But again, the underlying type must be the same type</p>
+<pre><code class="language-move">let i = &amp;0;
+let s = &amp;b&quot;&quot;;
+
+i == s; // ERROR!
+//   ^ expected an argument of type '&amp;u64'
+</code></pre>
+<a class="header" href="equality.html#restrictions" id="restrictions"><h2>Restrictions</h2></a>
+<p>Both <code>==</code> and <code>!=</code> consume the value when comparing them. As a result, the type system enforces that the type must have <a href="./abilities.md"><code>drop</code></a>. Recall that without the <a href="./abilities.md"><code>drop</code> ability</a>, ownership must be transferred by the end of the function, and such values can only be explicitly destroyed within their declaring module. If these were used directly with either equality <code>==</code> or non-equality <code>!=</code>, the value would be destroyed which would break <a href="./abilities.md"><code>drop</code> ability</a> safety guarantees!</p>
+<pre><code class="language-move=">address 0x42 {
+module Example {
+    struct Coin has store { value: u64 }
+    fun invalid(c1: Coin, c2: Coin) {
+        c1 == c2 // ERROR!
+//      ^^    ^^ These resources would be destroyed!
+    }
+}
+}
+</code></pre>
+<p>But, a programmer can <em>always</em> borrow the value first instead of directly comparing the value, and reference types have the <a href="./abilities.md"><code>drop</code> ability</a>. For example</p>
+<pre><code class="language-move=">address 0x42 {
+module Example {
+    struct Coin as store { value: u64 }
+    fun swap_if_equal(c1: Coin, c2: Coin): (Coin, Coin) {
+        let are_equal = &amp;c1 == &amp;c2; // valid
+        if (are_equal) (c2, c1) else (c1, c2)
+    }
+}
+}
+</code></pre>
+<a class="header" href="equality.html#avoid-extra-copies" id="avoid-extra-copies"><h2>Avoid Extra Copies</h2></a>
+<p>While a programmer <em>can</em> compare any value whose type has <a href="./abilities.md"><code>drop</code></a>, a programmer should often compare by reference to avoid expensive copies.</p>
+<pre><code class="language-move=">let v1: vector&lt;u8&gt; = function_that_returns_vector();
+let v2: vector&lt;u8&gt; = function_that_returns_vector();
+assert(copy v1 == copy v2, 42);
+//     ^^^^       ^^^^
+use_two_vectors(v1, v2);
+
+let s1: Foo = function_that_returns_large_struct();
+let s2: Foo = function_that_returns_large_struct();
+assert(copy s1 == copy s2, 42);
+//     ^^^^       ^^^^
+use_two_foos(s1, s2);
+</code></pre>
+<p>This code is perfectly acceptable (assuming <code>Foo</code> has <a href="./abilities.md"><code>drop</code></a>), just not efficient. The highlighted copies can be removed and replaced with borrows</p>
+<pre><code class="language-move=">let v1: vector&lt;u8&gt; = function_that_returns_vector();
+let v2: vector&lt;u8&gt; = function_that_returns_vector();
+assert(&amp;v1 == &amp;v2, 42);
+//     ^      ^
+use_two_vectors(v1, v2);
+
+let s1: Foo = function_that_returns_large_struct();
+let s2: Foo = function_that_returns_large_struct();
+assert(&amp;s1 == &amp;s2, 42);
+//     ^      ^
+use_two_foos(s1, s2);
+</code></pre>
+<p>The efficiency of the <code>==</code> itself remains the same, but the <code>copy</code>s are removed and thus the program is more efficient.</p>
+
+                </div>
+
+                <!-- Mobile navigation buttons -->
+                
+                    <a rel="prev" href="variables.html" class="mobile-nav-chapters previous" title="Previous chapter">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a rel="next" href="abort-and-assert.html" class="mobile-nav-chapters next" title="Next chapter">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+
+            </div>
+
+            
+                <a href="variables.html" class="nav-chapters previous" title="You can navigate through the chapters using the arrow keys">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+            
+
+            
+                <a href="abort-and-assert.html" class="nav-chapters next" title="You can navigate through the chapters using the arrow keys">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            
+
+        </div>
+
+
+        <!-- Local fallback for Font Awesome -->
+        <script>
+            if ($(".fa").css("font-family") !== "FontAwesome") {
+                $('<link rel="stylesheet" type="text/css" href="_FontAwesome/css/font-awesome.css">').prependTo('head');
+            }
+        </script>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        
+
+        
+
+        
+
+        
+
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS script -->
+        
+
+    </body>
+</html>

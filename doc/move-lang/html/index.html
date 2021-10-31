@@ -1,0 +1,151 @@
+<!DOCTYPE HTML>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Introduction - </title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+        <link rel="stylesheet" href="book.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <link rel="shortcut icon" href="favicon.png">
+
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme -->
+        
+
+        
+
+        <!-- Fetch Clipboard.js from CDN but have a local fallback -->
+        <script src="https://cdn.jsdelivr.net/clipboard.js/1.6.1/clipboard.min.js"></script>
+        <script>
+            if (typeof Clipboard == 'undefined') {
+                document.write(unescape("%3Cscript src='clipboard.min.js'%3E%3C/script%3E"));
+            }
+        </script>
+
+        <!-- Fetch JQuery from CDN but have a local fallback -->
+        <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+        <script>
+            if (typeof jQuery == 'undefined') {
+                document.write(unescape("%3Cscript src='jquery.js'%3E%3C/script%3E"));
+            }
+        </script>
+
+        <!-- Fetch store.js from local - TODO add CDN when 2.x.x is available on cdnjs -->
+        <script src="store.js"></script>
+
+    </head>
+    <body class="light">
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme = store.get('mdbook-theme');
+            if (theme === null || theme === undefined) { theme = 'light'; }
+            $('body').removeClass().addClass(theme);
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var sidebar = store.get('mdbook-sidebar');
+            if (sidebar === "hidden") { $("html").addClass("sidebar-hidden") }
+            else if (sidebar === "visible") { $("html").addClass("sidebar-visible") }
+        </script>
+
+        <div id="sidebar" class="sidebar">
+            <ul class="chapter"><li class="affix"><a href="introduction.html" class="active">Introduction</a></li><li><a href="modules-and-scripts.html"><strong>1.</strong> Modules and Scripts</a></li><li><a href="creating-coins.html"><strong>2.</strong> First Tutorial: Creating Coins</a></li><li><a href="integers.html"><strong>3.</strong> Integers</a></li><li><a href="bool.html"><strong>4.</strong> Bool</a></li><li><a href="address.html"><strong>5.</strong> Address</a></li><li><a href="vector.html"><strong>6.</strong> Vector</a></li><li><a href="signer.html"><strong>7.</strong> Signer</a></li><li><a href="references.html"><strong>8.</strong> References</a></li><li><a href="tuples.html"><strong>9.</strong> Tuples and Unit</a></li><li><a href="variables.html"><strong>10.</strong> Local Variables and Scopes</a></li><li><a href="equality.html"><strong>11.</strong> Equality</a></li><li><a href="abort-and-assert.html"><strong>12.</strong> Abort and Assert</a></li><li><a href="conditionals.html"><strong>13.</strong> Conditionals</a></li><li><a href="loops.html"><strong>14.</strong> While and Loop</a></li><li><a href="functions.html"><strong>15.</strong> Functions</a></li><li><a href="structs-and-resources.html"><strong>16.</strong> Structs and Resources</a></li><li><a href="constants.html"><strong>17.</strong> Constants</a></li><li><a href="generics.html"><strong>18.</strong> Generics</a></li><li><a href="abilities.html"><strong>19.</strong> Type Abilities</a></li><li><a href="uses.html"><strong>20.</strong> Uses and Aliases</a></li><li><a href="friends.html"><strong>21.</strong> Friends</a></li><li><a href="global-storage-structure.html"><strong>22.</strong> Global Storage Structure</a></li><li><a href="global-storage-operators.html"><strong>23.</strong> Global Storage Operators</a></li><li><a href="standard-library.html"><strong>24.</strong> Standard Library</a></li><li><a href="coding-conventions.html"><strong>25.</strong> Coding Conventions</a></li></ul>
+        </div>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page" tabindex="-1">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div class="left-buttons">
+                        <i id="sidebar-toggle" class="fa fa-bars" title="Toggle sidebar"></i>
+                        <i id="theme-toggle" class="fa fa-paint-brush" title="Change theme"></i>
+                    </div>
+
+                    <h1 class="menu-title"></h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html">
+                            <i id="print-button" class="fa fa-print" title="Print this book"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="content" class="content">
+                    <a class="header" href="introduction.html#introduction" id="introduction"><h1>Introduction</h1></a>
+<p>Welcome to Move, a next generation language for secure, sandboxed, and formally verified programming. Its first use case is for the Diem blockchain, where Move provides the foundation for its implementation. Move allows developers to write programs that flexibly manage and transfer assets, while providing the security and protections against attacks on those assets. However, Move has been developed with use cases in mind outside a blockchain context as well.</p>
+<p>Move takes its cue from <a href="https://www.rust-lang.org/">Rust</a> by using resource types with move (hence the name) semantics as an explicit representation of digital assets, such as currency.</p>
+<a class="header" href="introduction.html#who-is-move-for" id="who-is-move-for"><h2>Who is Move for?</h2></a>
+<p>Move was designed and created as a secure, verified, yet flexible programming language. The first use of Move is for the implementation of the Diem blockchain. That said, the language is still evolving. Move has the potential to be a language for other blockchains, and even non-blockchain use cases as well.</p>
+<p>Given custom Move modules will not be supported at the <a href="https://diem.com/white-paper/#whats-next">launch</a> of the Diem Payment Network (DPN), we are targeting an early Move Developer persona.</p>
+<p>The early Move Developer is one with some programming experience, who wants to begin understanding the core programming language and see examples of its usage.</p>
+<a class="header" href="introduction.html#hobbyists" id="hobbyists"><h3>Hobbyists</h3></a>
+<p>Understanding that the capability to create custom modules on the Diem Payment Network will not be available at launch, the hobbyist Move Developer is interested in learning the intricacies of the language. She will understand the basic syntax, the standard libraries available, and write example code that can be executed using the Move CLI. The Move Developer may even want to dig into understanding how the Move Virtual Machine executes the code she writes.</p>
+<a class="header" href="introduction.html#core-contributor" id="core-contributor"><h3>Core Contributor</h3></a>
+<p>Beyond a hobbyist wanting to stay ahead of the curve for the core programming language is someone who may want to <a href="https://diem.com/en-US/cla-sign/">contribute</a> directly to Move. Whether this includes submitting language improvements or even, in the future, adding core modules available on the Diem Payment Network, the core contributor will understand Move at a deep level. Once familiar with Move, the core contributor may want to submit a request to the Diem Association to add new transaction or module types, via the <a href="https://dip.diem.com/">Diem Improvement Protocol (DIP) process</a>.</p>
+<a class="header" href="introduction.html#who-move-is-currently-not-targeting" id="who-move-is-currently-not-targeting"><h3>Who Move is currently not targeting</h3></a>
+<p>Currently, Move is not targeting developers who wish to create custom modules and contracts for use on the Diem Payment Network. We are also not targeting novice developers who expect a completely polished developer experience even in testing the language.</p>
+<a class="header" href="introduction.html#where-do-i-start" id="where-do-i-start"><h2>Where Do I Start?</h2></a>
+<p>Begin with understanding <a href="./modules-and-scripts.md">modules and scripts</a> and then work through the <a href="./creating-coins.md">first tutorial on creating coins</a>.</p>
+
+                </div>
+
+                <!-- Mobile navigation buttons -->
+                
+
+                
+                    <a rel="next" href="modules-and-scripts.html" class="mobile-nav-chapters next" title="Next chapter">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+
+            </div>
+
+            
+
+            
+                <a href="modules-and-scripts.html" class="nav-chapters next" title="You can navigate through the chapters using the arrow keys">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            
+
+        </div>
+
+
+        <!-- Local fallback for Font Awesome -->
+        <script>
+            if ($(".fa").css("font-family") !== "FontAwesome") {
+                $('<link rel="stylesheet" type="text/css" href="_FontAwesome/css/font-awesome.css">').prependTo('head');
+            }
+        </script>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        
+
+        
+
+        
+
+        
+
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS script -->
+        
+
+    </body>
+</html>

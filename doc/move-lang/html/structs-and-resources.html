@@ -1,0 +1,543 @@
+<!DOCTYPE HTML>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Structs and Resources - </title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <base href="">
+
+        <link rel="stylesheet" href="book.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <link rel="shortcut icon" href="favicon.png">
+
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme -->
+        
+
+        
+
+        <!-- Fetch Clipboard.js from CDN but have a local fallback -->
+        <script src="https://cdn.jsdelivr.net/clipboard.js/1.6.1/clipboard.min.js"></script>
+        <script>
+            if (typeof Clipboard == 'undefined') {
+                document.write(unescape("%3Cscript src='clipboard.min.js'%3E%3C/script%3E"));
+            }
+        </script>
+
+        <!-- Fetch JQuery from CDN but have a local fallback -->
+        <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+        <script>
+            if (typeof jQuery == 'undefined') {
+                document.write(unescape("%3Cscript src='jquery.js'%3E%3C/script%3E"));
+            }
+        </script>
+
+        <!-- Fetch store.js from local - TODO add CDN when 2.x.x is available on cdnjs -->
+        <script src="store.js"></script>
+
+    </head>
+    <body class="light">
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme = store.get('mdbook-theme');
+            if (theme === null || theme === undefined) { theme = 'light'; }
+            $('body').removeClass().addClass(theme);
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var sidebar = store.get('mdbook-sidebar');
+            if (sidebar === "hidden") { $("html").addClass("sidebar-hidden") }
+            else if (sidebar === "visible") { $("html").addClass("sidebar-visible") }
+        </script>
+
+        <div id="sidebar" class="sidebar">
+            <ul class="chapter"><li class="affix"><a href="introduction.html">Introduction</a></li><li><a href="modules-and-scripts.html"><strong>1.</strong> Modules and Scripts</a></li><li><a href="creating-coins.html"><strong>2.</strong> First Tutorial: Creating Coins</a></li><li><a href="integers.html"><strong>3.</strong> Integers</a></li><li><a href="bool.html"><strong>4.</strong> Bool</a></li><li><a href="address.html"><strong>5.</strong> Address</a></li><li><a href="vector.html"><strong>6.</strong> Vector</a></li><li><a href="signer.html"><strong>7.</strong> Signer</a></li><li><a href="references.html"><strong>8.</strong> References</a></li><li><a href="tuples.html"><strong>9.</strong> Tuples and Unit</a></li><li><a href="variables.html"><strong>10.</strong> Local Variables and Scopes</a></li><li><a href="equality.html"><strong>11.</strong> Equality</a></li><li><a href="abort-and-assert.html"><strong>12.</strong> Abort and Assert</a></li><li><a href="conditionals.html"><strong>13.</strong> Conditionals</a></li><li><a href="loops.html"><strong>14.</strong> While and Loop</a></li><li><a href="functions.html"><strong>15.</strong> Functions</a></li><li><a href="structs-and-resources.html" class="active"><strong>16.</strong> Structs and Resources</a></li><li><a href="constants.html"><strong>17.</strong> Constants</a></li><li><a href="generics.html"><strong>18.</strong> Generics</a></li><li><a href="abilities.html"><strong>19.</strong> Type Abilities</a></li><li><a href="uses.html"><strong>20.</strong> Uses and Aliases</a></li><li><a href="friends.html"><strong>21.</strong> Friends</a></li><li><a href="global-storage-structure.html"><strong>22.</strong> Global Storage Structure</a></li><li><a href="global-storage-operators.html"><strong>23.</strong> Global Storage Operators</a></li><li><a href="standard-library.html"><strong>24.</strong> Standard Library</a></li><li><a href="coding-conventions.html"><strong>25.</strong> Coding Conventions</a></li></ul>
+        </div>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page" tabindex="-1">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div class="left-buttons">
+                        <i id="sidebar-toggle" class="fa fa-bars" title="Toggle sidebar"></i>
+                        <i id="theme-toggle" class="fa fa-paint-brush" title="Change theme"></i>
+                    </div>
+
+                    <h1 class="menu-title"></h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html">
+                            <i id="print-button" class="fa fa-print" title="Print this book"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="content" class="content">
+                    <a class="header" href="structs-and-resources.html#structs-and-resources" id="structs-and-resources"><h1>Structs and Resources</h1></a>
+<p>A <em>struct</em> is a user-defined data structure containing typed fields. Structs can store any non-reference type, including other structs.</p>
+<p>We often refer to struct values as <em>resources</em> if they cannot be copied and cannot be dropped. In this case, resource values must have ownership transferred by the end of the function. This property makes resources particularly well served for defining global storage schemas or for representing important values (such as a token).</p>
+<p>By default, structs are linear and ephemeral. By this we mean that they: cannot be copied, cannot be dropped, and cannot be stored in global storage. This means that all values have to have ownership transferred (linear) and the values must be dealt with by the end of the program's execution (ephemeral). We can relax this behavior by giving the struct <a href="./abilities.md">abilities</a> which allow values to be copied or dropped and also to be stored in global storage or to define gobal storage schemas.</p>
+<a class="header" href="structs-and-resources.html#defining-structs" id="defining-structs"><h2>Defining Structs</h2></a>
+<p>Structs must be defined inside a module:</p>
+<pre><code class="language-move">address 0x2 {
+module M {
+    struct Foo { x: u64, y: bool }
+    struct Bar {}
+    struct Baz { foo: Foo, }
+    //                   ^ note: it is fine to have a trailing comma
+}
+}
+</code></pre>
+<p>Structs cannot be recursive, so the following definition is invalid:</p>
+<pre><code class="language-move=">struct Foo { x: Foo }
+//              ^ error! Foo cannot contain Foo
+</code></pre>
+<p>As mentioned above: by default, a struct declaration is linear and ephemeral. So to allow the value to be used with certain operations (that copy it, drop it, store it in global storage, or use it as a storage schema), structs can be granted <a href="./abilities.md">abilities</a> by annotating them with <code>has &lt;ability&gt;</code>:</p>
+<pre><code class="language-move=">address 0x2 {
+module M {
+    struct Foo has copy, drop { x: u64, y: bool }
+}
+}
+</code></pre>
+<p>For more details, see the <a href="./abilities.md#annotating-structs">annotating structs</a> section.</p>
+<a class="header" href="structs-and-resources.html#naming" id="naming"><h3>Naming</h3></a>
+<p>Structs must start with a capital letter <code>A</code> to <code>Z</code>. After the first letter, constant names can contain underscores <code>_</code>, letters <code>a</code> to <code>z</code>, letters <code>A</code> to <code>Z</code>, or digits <code>0</code> to <code>9</code>.</p>
+<pre><code class="language-move">struct Foo {}
+struct BAR {}
+struct B_a_z_4_2 {}
+</code></pre>
+<p>This naming restriction of starting with <code>A</code> to <code>Z</code> is in place to give room for future language features. It may or may not be removed later.</p>
+<a class="header" href="structs-and-resources.html#using-structs" id="using-structs"><h2>Using Structs</h2></a>
+<a class="header" href="structs-and-resources.html#creating-structs" id="creating-structs"><h3>Creating Structs</h3></a>
+<p>Values of a struct type can be created (or &quot;packed&quot;) by indicating the struct name, followed by value for each field:</p>
+<pre><code class="language-move=">address 0x2 {
+module M {
+    struct Foo has drop { x: u64, y: bool }
+    struct Baz has drop { foo: Foo }
+
+    fun example() {
+        let foo = Foo { x: 0, y: false };
+        let baz = Baz { foo: foo };
+    }
+}
+}
+</code></pre>
+<p>If you initialize a struct field with a local variable whose name is the same as the field, you can use the following shorthand:</p>
+<pre><code class="language-move">let baz = Baz { foo: foo };
+// is equivalent to
+let baz = Baz { foo };
+</code></pre>
+<p>This is called sometimes called &quot;field name punning&quot;.</p>
+<a class="header" href="structs-and-resources.html#destroying-structs-via-pattern-matching" id="destroying-structs-via-pattern-matching"><h3>Destroying Structs via Pattern Matching</h3></a>
+<p>Struct values can be destroyed by binding or assigning them patterns.</p>
+<pre><code class="language-move=">address 0x2 {
+module M {
+    struct Foo { x: u64, y: bool }
+    struct Bar { foo: Foo }
+    struct Baz {}
+
+    fun example_destroy_foo() {
+        let foo = Foo { x: 3, y: false };
+        let Foo { x, y: foo_y } = foo;
+        //        ^ shorthand for `x: x`
+
+        // two new bindings
+        //   x: u64 = 3
+        //   foo_y: bool = false
+    }
+
+    fun example_destroy_foo_wildcard() {
+        let foo = Foo { x: 3, y: false };
+        let Foo { x, y: _ } = foo;
+        // only one new binding since y was bound to a wildcard
+        //   x: u64 = 3
+    }
+
+    fun example_destroy_foo_assignment() {
+        let x: u64;
+        let y: bool;
+        Foo { x, y } = Foo { x: 3, y: false };
+        // mutating existing variables x &amp; y
+        //   x = 3, y = false
+    }
+
+    fun example_foo_ref() {
+        let foo = Foo { x: 3, y: false };
+        let Foo { x, y } = &amp;foo;
+        // two new bindings
+        //   x: &amp;u64
+        //   y: &amp;bool
+    }
+
+    fun example_foo_ref_mut() {
+        let foo = Foo { x: 3, y: false };
+        let Foo { x, y } = &amp;mut foo;
+        // two new bindings
+        //   x: &amp;mut u64
+        //   y: &amp;mut bool
+    }
+
+    fun example_destroy_bar() {
+        let bar = Bar { foo: Foo { x: 3, y: false } };
+        let Bar { foo: Foo { x, y } } = bar;
+        //             ^ nested pattern
+        // two new bindings
+        //   x: u64 = 3
+        //   foo_y: bool = false
+    }
+
+    fun example_destroy_baz() {
+        let baz = Baz {};
+        let Baz {} = baz;
+    }
+}
+}
+</code></pre>
+<a class="header" href="structs-and-resources.html#borrowing-structs-and-fields" id="borrowing-structs-and-fields"><h3>Borrowing Structs and Fields</h3></a>
+<p>The <code>&amp;</code> and <code>&amp;mut</code> operator can be used to create references to structs or fields. These examples include some optional type annotations (e.g., <code>: &amp;Foo</code>) to demonstrate the type of operations.</p>
+<pre><code class="language-move=">let foo = Foo { x: 3, y: true };
+let foo_ref: &amp;Foo = &amp;foo;
+let y: bool = foo_ref.y;          // reading a field via a reference to the struct
+let x_ref: &amp;u64 = &amp;foo.x;
+
+let x_ref_mut: &amp;mut u64 = &amp;mut foo.x;
+*x_ref_mut = 42;            // modifying a field via a mutable reference
+</code></pre>
+<p>It is possible to borrow inner fields of nested structs.</p>
+<pre><code class="language-move=">let foo = Foo { x: 3, y: true };
+let bar = Bar { foo };
+
+let x_ref = &amp;bar.foo.x;
+</code></pre>
+<p>You can also borrow a field via a reference to a struct.</p>
+<pre><code class="language-move=">let foo = Foo { x: 3, y: true };
+let foo_ref = &amp;foo;
+let x_ref = &amp;foo_ref.x;
+// this has the same effect as let x_ref = &amp;foo.x
+</code></pre>
+<a class="header" href="structs-and-resources.html#reading-and-writing-fields" id="reading-and-writing-fields"><h3>Reading and Writing Fields</h3></a>
+<p>If you need to read and copy a field's value, you can then dereference the borrowed field</p>
+<pre><code class="language-move=">let foo = Foo { x: 3, y: true };
+let bar = Bar { foo: copy foo };
+let x: u64 = *&amp;foo.x;
+let y: bool = *&amp;foo.y;
+let foo2: Foo = *&amp;bar.foo;
+</code></pre>
+<p>If the field is implicitly copyable, the dot operator can be used to read fields of a struct without any borrowing. (Only scalar values with the <code>copy</code> ability are implicitly copyable.)</p>
+<pre><code class="language-move=">let foo = Foo { x: 3, y: true };
+let x = foo.x;  // x == 3
+let y = foo.y;  // y == true
+</code></pre>
+<p>Dot operators can be chained to access nested fields.</p>
+<pre><code class="language-move=">let baz = Baz { foo: Foo { x: 3, y: true } };
+let x = baz.foo.x; // x = 3;
+</code></pre>
+<p>However, this is not permitted for fields that contain non-primitive types, such a vector or another struct</p>
+<pre><code class="language-move=">let foo = Foo { x: 3, y: true };
+let bar = Bar { foo };
+let foo2: Foo = *&amp;bar.foo;
+let foo3: Foo = bar.foo; // error! add an explicit copy with *&amp;
+</code></pre>
+<p>The reason behind this design decision is that copying a vector or another struct might be an expensive operation. It is important for a programmer to be aware of this copy and make others aware with the explicit syntax <code>*&amp;</code></p>
+<p>In addition reading from fields, the dot syntax can be used to modify fields, regardless of the field being a primitive type or some other struct</p>
+<pre><code class="language-move=">let foo = Foo { x: 3, y: true };
+foo.x = 42;     // foo = Foo { x: 42, y: true }
+foo.y = !foo.y; // foo = Foo { x: 42, y: false }
+let bar = Bar { foo };            // bar = Bar { foo: Foo { x: 42, y: false } }
+bar.foo.x = 52;                   // bar = Bar { foo: Foo { x: 52, y: false } }
+bar.foo = Foo { x: 62, y: true }; // bar = Bar { foo: Foo { x: 62, y: true } }
+</code></pre>
+<p>The dot syntax also works via a reference to a struct</p>
+<pre><code class="language-move=">let foo = Foo { x: 3, y: true };
+let foo_ref = &amp;mut foo;
+foo_ref.x = foo_ref.x + 1;
+</code></pre>
+<a class="header" href="structs-and-resources.html#privileged-struct-operations" id="privileged-struct-operations"><h2>Privileged Struct Operations</h2></a>
+<p>Most struct operations on a struct type <code>T</code> can only be performed inside the module that declares <code>T</code>:</p>
+<ul>
+<li>Struct types can only be created (&quot;packed&quot;), destroyed (&quot;unpacked&quot;) inside the module that defines the struct.</li>
+<li>The fields of a struct are only accessible inside the module that defines the struct.</li>
+</ul>
+<p>Following these rules, if you want to modify your struct outside the module, you will need to provide publis APIs for them. The end of the chapter contains some examples of this.</p>
+<p>However, struct <em>types</em> are always visible to another module or script:</p>
+<pre><code class="language-move=">// M.move
+address 0x2 {
+module M {
+    struct Foo has drop { x: u64 }
+
+    public fun new_foo(): Foo {
+        Foo { x: 42 }
+    }
+}
+}
+</code></pre>
+<pre><code class="language-move=">// N.move
+address 0x2 {
+module N {
+    use 0x2::M;
+
+    struct Wrapper has drop {
+        foo: M::Foo
+    }
+
+    fun f1(foo: M::Foo) {
+        let x = foo.x;
+        //      ^ error! cannot access fields of `foo` here
+    }
+
+    fun f2() {
+        let foo_wrapper = Wrapper { foo: M::new_foo() };
+    }
+}
+}
+</code></pre>
+<p>Note that structs do not have visibility modifiers (e.g., <code>public</code> or <code>private</code>).</p>
+<a class="header" href="structs-and-resources.html#ownership" id="ownership"><h2>Ownership</h2></a>
+<p>As mentioned above in <a href="structs-and-resources.html#defining-structs">Defining Structs</a>, structs are by default linear and ephemeral. This means they cannot be copied or dropped. This property can be very useful when modeling real world resources like money, as you do not want money to be duplicated or get lost in circulation.</p>
+<pre><code class="language-move=">address 0x2 {
+module M {
+    struct Foo { x: u64 }
+
+    public fun copying_resource() {
+        let foo = Foo { x: 100 };
+        let foo_copy = copy foo; // error! 'copy'-ing requires the 'copy' ability
+        let foo_ref = &amp;foo;
+        let another_copy = *foo_ref // error! dereference requires the 'copy' ability
+    }
+
+    public fun destroying_resource1() {
+        let foo = Foo { x: 100 };
+
+        // error! when the function returns, foo still contains a value.
+        // This destruction requires the 'drop' ability
+    }
+
+    public fun destroying_resource2(f: &amp;mut Foo) {
+        *f = Foo { x: 100 } // error!
+                            // destroying the old value via a write requires the 'drop' ability
+    }
+}
+}
+</code></pre>
+<p>To fix the second example (<code>fun dropping_resource</code>), you would need to manually &quot;unpack&quot; the resource:</p>
+<pre><code class="language-move=">address 0x2 {
+module M {
+    struct Foo { x: u64 }
+
+    public fun destroying_resource1_fixed() {
+        let foo = Foo { x: 100 };
+        let Foo { x: _ } = foo;
+    }
+}
+}
+</code></pre>
+<p>Recall that you are only able to deconstruct a resource within the module in which it is defined.
+This can be leveraged to enforce certain invariants in a system, for example, conservation of money.</p>
+<p>If on the other hand, your struct does not represent something valuable, you can add the abilities
+<code>copy</code> and <code>drop</code> to get a struct value that might feel more familiar from other programming
+languages:</p>
+<pre><code class="language-move=">address 0x2 {
+module M {
+    struct Foo has copy, drop { x: u64 }
+
+    public fun run() {
+        let foo = Foo { x: 100 };
+        let foo_copy = copy foo;
+        // ^ this code copies foo, whereas `let x = foo` or
+        // `let x = move foo` both move foo
+
+        let x = foo.x;            // x = 100
+        let x_copy = foo_copy.x;  // x = 100
+
+        // both foo and foo_copy are implicitly discarded when the function returns
+    }
+}
+}
+</code></pre>
+<a class="header" href="structs-and-resources.html#storing-resources-in-global-storage" id="storing-resources-in-global-storage"><h2>Storing Resources in Global Storage</h2></a>
+<p>Only structs with the <code>key</code> ability can be saved directly in <a href="./global-storage-operators.md">persistent global storage</a>. All values stored within those <code>key</code> structs must have the <code>store</code> abilities. See the [ability](./abilities] and <a href="./global-storage-operators.md">global storage</a> chapters for more detail.</p>
+<a class="header" href="structs-and-resources.html#examples" id="examples"><h2>Examples</h2></a>
+<p>Here are two short examples of how you might use structs to represent valuable data (in the case of <code>Coin</code>) or more classical data (in the case of <code>Point</code> and <code>Circle</code>)</p>
+<a class="header" href="structs-and-resources.html#example-1-coin" id="example-1-coin"><h3>Example 1: Coin</h3></a>
+<!-- TODO link to access control for mint -->
+```move=
+address 0x2 {
+module M {
+    // We do not want the Coin to be copied because that would be duplicating this "money",
+    // so we do not give the struct the 'copy' ability.
+    // Similarly, we do not want programmers to destroy coins, so we do not give the struct the
+    // 'drop' ability.
+    // However, we *want* users of the modules to be able to store this coin in persistent global
+    // storage, so we grant the struct the 'store' ability. This struct will only be inside of
+    // other resources inside of global storage, so we do not give the struct the 'key' ability.
+    struct Coin has store {
+        value: u64,
+    }
+<pre><code>public fun mint(value: u64): Coin {
+    // You would want to gate this function with some form of access control to prevent
+    // anyone using this module from minting an infinite amount of coins
+    Coin { value }
+}
+
+public fun withdraw(coin: &amp;mut Coin, amount: u64): Coin {
+    assert(coin.balance &gt;= amount, 1000);
+    coin.value = coin.value - amount;
+    Coin { value: amount }
+}
+
+public fun deposit(coin: &amp;mut Coin, other: Coin) {
+    let Coin { value } = other;
+    coin.value = coin.value + value;
+}
+
+public fun split(coin: Coin, amount: u64): (Coin, Coin) {
+    let other = withdraw(&amp;mut coin, amount);
+    (coin, other)
+}
+
+public fun merge(coin1: Coin, coin2: Coin): Coin {
+    deposit(&amp;mut coin1, coin2);
+    coin1
+}
+
+public fun destroy_zero(coin: Coin) {
+    let Coin { value } = coin;
+    assert(value == 0, 1001);
+}
+</code></pre>
+<p>}
+}</p>
+<pre><code>
+### Example 2: Geometry
+
+```move=
+address 0x2 {
+module Point {
+    struct Point has copy, drop, store {
+        x: u64,
+        y: u64,
+    }
+
+    public fun new(x: u64, y: u64): Point {
+        Point {
+            x, y
+        }
+    }
+
+    public fun x(p: &amp;Point): u64 {
+        p.x
+    }
+
+    public fun y(p: &amp;Point): u64 {
+        p.y
+    }
+
+    fun abs_sub(a: u64, b: u64): u64 {
+        if (a &lt; b) {
+            b - a
+        }
+        else {
+            a - b
+        }
+    }
+
+    public fun dist_squared(p1: &amp;Point, p2: &amp;Point): u64 {
+        let dx = abs_sub(p1.x, p2.x);
+        let dy = abs_sub(p1.y, p2.y);
+        dx*dx + dy*dy
+    }
+}
+}
+</code></pre>
+<pre><code class="language-move=">address 0x2 {
+module Circle {
+    use 0x2::Point::{Self, Point};
+
+    struct Circle has copy, drop, store {
+        center: Point,
+        radius: u64,
+    }
+
+    public fun new(center: Point, radius: u64): Circle {
+        Circle { center, radius }
+    }
+
+    public fun overlaps(c1: &amp;Circle, c2: &amp;Circle): bool {
+        let d = Point::dist_squared(&amp;c1.center, &amp;c2.center);
+        let r1 = c1.radius;
+        let r2 = c2.radius;
+        d*d &lt;= r1*r1 + 2*r1*r2 + r2*r2
+    }
+}
+}
+</code></pre>
+
+                </div>
+
+                <!-- Mobile navigation buttons -->
+                
+                    <a rel="prev" href="functions.html" class="mobile-nav-chapters previous" title="Previous chapter">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a rel="next" href="constants.html" class="mobile-nav-chapters next" title="Next chapter">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+
+            </div>
+
+            
+                <a href="functions.html" class="nav-chapters previous" title="You can navigate through the chapters using the arrow keys">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+            
+
+            
+                <a href="constants.html" class="nav-chapters next" title="You can navigate through the chapters using the arrow keys">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            
+
+        </div>
+
+
+        <!-- Local fallback for Font Awesome -->
+        <script>
+            if ($(".fa").css("font-family") !== "FontAwesome") {
+                $('<link rel="stylesheet" type="text/css" href="_FontAwesome/css/font-awesome.css">').prependTo('head');
+            }
+        </script>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        
+
+        
+
+        
+
+        
+
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS script -->
+        
+
+    </body>
+</html>

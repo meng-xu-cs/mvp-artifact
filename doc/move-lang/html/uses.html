@@ -1,0 +1,413 @@
+<!DOCTYPE HTML>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Uses and Aliases - </title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <base href="">
+
+        <link rel="stylesheet" href="book.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <link rel="shortcut icon" href="favicon.png">
+
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme -->
+        
+
+        
+
+        <!-- Fetch Clipboard.js from CDN but have a local fallback -->
+        <script src="https://cdn.jsdelivr.net/clipboard.js/1.6.1/clipboard.min.js"></script>
+        <script>
+            if (typeof Clipboard == 'undefined') {
+                document.write(unescape("%3Cscript src='clipboard.min.js'%3E%3C/script%3E"));
+            }
+        </script>
+
+        <!-- Fetch JQuery from CDN but have a local fallback -->
+        <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+        <script>
+            if (typeof jQuery == 'undefined') {
+                document.write(unescape("%3Cscript src='jquery.js'%3E%3C/script%3E"));
+            }
+        </script>
+
+        <!-- Fetch store.js from local - TODO add CDN when 2.x.x is available on cdnjs -->
+        <script src="store.js"></script>
+
+    </head>
+    <body class="light">
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme = store.get('mdbook-theme');
+            if (theme === null || theme === undefined) { theme = 'light'; }
+            $('body').removeClass().addClass(theme);
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var sidebar = store.get('mdbook-sidebar');
+            if (sidebar === "hidden") { $("html").addClass("sidebar-hidden") }
+            else if (sidebar === "visible") { $("html").addClass("sidebar-visible") }
+        </script>
+
+        <div id="sidebar" class="sidebar">
+            <ul class="chapter"><li class="affix"><a href="introduction.html">Introduction</a></li><li><a href="modules-and-scripts.html"><strong>1.</strong> Modules and Scripts</a></li><li><a href="creating-coins.html"><strong>2.</strong> First Tutorial: Creating Coins</a></li><li><a href="integers.html"><strong>3.</strong> Integers</a></li><li><a href="bool.html"><strong>4.</strong> Bool</a></li><li><a href="address.html"><strong>5.</strong> Address</a></li><li><a href="vector.html"><strong>6.</strong> Vector</a></li><li><a href="signer.html"><strong>7.</strong> Signer</a></li><li><a href="references.html"><strong>8.</strong> References</a></li><li><a href="tuples.html"><strong>9.</strong> Tuples and Unit</a></li><li><a href="variables.html"><strong>10.</strong> Local Variables and Scopes</a></li><li><a href="equality.html"><strong>11.</strong> Equality</a></li><li><a href="abort-and-assert.html"><strong>12.</strong> Abort and Assert</a></li><li><a href="conditionals.html"><strong>13.</strong> Conditionals</a></li><li><a href="loops.html"><strong>14.</strong> While and Loop</a></li><li><a href="functions.html"><strong>15.</strong> Functions</a></li><li><a href="structs-and-resources.html"><strong>16.</strong> Structs and Resources</a></li><li><a href="constants.html"><strong>17.</strong> Constants</a></li><li><a href="generics.html"><strong>18.</strong> Generics</a></li><li><a href="abilities.html"><strong>19.</strong> Type Abilities</a></li><li><a href="uses.html" class="active"><strong>20.</strong> Uses and Aliases</a></li><li><a href="friends.html"><strong>21.</strong> Friends</a></li><li><a href="global-storage-structure.html"><strong>22.</strong> Global Storage Structure</a></li><li><a href="global-storage-operators.html"><strong>23.</strong> Global Storage Operators</a></li><li><a href="standard-library.html"><strong>24.</strong> Standard Library</a></li><li><a href="coding-conventions.html"><strong>25.</strong> Coding Conventions</a></li></ul>
+        </div>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page" tabindex="-1">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div class="left-buttons">
+                        <i id="sidebar-toggle" class="fa fa-bars" title="Toggle sidebar"></i>
+                        <i id="theme-toggle" class="fa fa-paint-brush" title="Change theme"></i>
+                    </div>
+
+                    <h1 class="menu-title"></h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html">
+                            <i id="print-button" class="fa fa-print" title="Print this book"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="content" class="content">
+                    <a class="header" href="uses.html#uses-and-aliases" id="uses-and-aliases"><h1>Uses and Aliases</h1></a>
+<p>The <code>use</code> syntax can be used to create aliases to members in other modules. <code>use</code> can be used to create aliases that last either for the entire module, or for a given expression block scope.</p>
+<a class="header" href="uses.html#syntax" id="syntax"><h2>Syntax</h2></a>
+<p>There are several different syntax cases for <code>use</code>. Starting with the most simple, we have the following for creating aliases to other modules</p>
+<pre><code class="language-move">use &lt;address&gt;::&lt;module name&gt;;
+use &lt;address&gt;::&lt;module name&gt; as &lt;module alias name&gt;;
+</code></pre>
+<p>For example</p>
+<pre><code class="language-move">use Std::Vector;
+use Std::Vector as V;
+</code></pre>
+<p><code>use Std::Vector;</code> introduces an alias <code>Vector</code> for <code>Std::Vector</code>. This means that anywhere you would want to use the module name <code>Std::Vector</code> (assuming this <code>use</code> is in scope), you could use <code>Vector</code> instead. <code>use Std::Vector;</code>  is equivalent to <code>use Std::Vector as Vector;</code></p>
+<p>Similarly <code>use Std::Vector as V;</code> would let you use <code>V</code> instead of <code>Std::Vector</code></p>
+<pre><code class="language-move=">use Std::Vector;
+use Std::Vector as V;
+
+fun new_vecs(): (vector&lt;u8&gt;, vector&lt;u8&gt;, vector&lt;u8&gt;) {
+    let v1 = Std::Vector::empty();
+    let v2 = Vector::empty();
+    let v3 = V::empty();
+    (v1, v2, v3)
+}
+</code></pre>
+<p>If you want to import a specific module member (such as a function, struct, or constant). You can use the following syntax.</p>
+<pre><code class="language-move">use &lt;address&gt;::&lt;module name&gt;::&lt;module member&gt;;
+use &lt;address&gt;::&lt;module name&gt;::&lt;module member&gt; as &lt;member alias&gt;;
+</code></pre>
+<p>For example</p>
+<pre><code class="language-move">use Std::Vector::empty;
+use Std::Vector::empty as empty_vec;
+</code></pre>
+<p>This would let you use the function <code>Std::Vector::empty</code> without full qualification. Instead you could use <code>empty</code> and <code>empty_vec</code> respectively. Again, <code>use Std::Vector::empty;</code> is equivalent to <code>use Std::Vector::empty as empty;</code></p>
+<pre><code class="language-move=">use Std::Vector::empty;
+use Std::Vector::empty as empty_vec;
+
+fun new_vecs(): (vector&lt;u8&gt;, vector&lt;u8&gt;, vector&lt;u8&gt;) {
+    let v1 = Std::Vector::empty();
+    let v2 = empty();
+    let v3 = empty_vec();
+    (v1, v2, v3)
+}
+</code></pre>
+<p>If you want to add aliases for multiple module members at once, you can do so with the following syntax</p>
+<pre><code class="language-move">use &lt;address&gt;::&lt;module name&gt;::{&lt;module member&gt;, &lt;module member&gt; as &lt;member alias&gt; ... };
+</code></pre>
+<p>For example</p>
+<pre><code class="language-move=">use Std::Vector::{push_back, length as len, pop_back};
+
+fun swap_last_two&lt;T&gt;(v: &amp;mut vector&lt;T&gt;) {
+    assert(len(v) &gt;= 2, 42);
+    let last = pop_back(v);
+    let second_to_last = pop_back(v);
+    push_back(v, last);
+    push_back(v, second_to_last)
+}
+</code></pre>
+<p>If you need to add an alias to the Module itself in addition to module members, you can do that in a single <code>use</code> using <code>Self</code>. <code>Self</code> is a member of sorts that refers to the module.</p>
+<pre><code class="language-move">use Std::Vector::{Self, empty};
+</code></pre>
+<p>For clarity, all of the following are equivalent:</p>
+<pre><code class="language-move">use Std::Vector;
+use Std::Vector as Vector;
+use Std::Vector::Self;
+use Std::Vector::Self as Vector;
+use Std::Vector::{Self};
+use Std::Vector::{Self as Vector};
+</code></pre>
+<p>If needed, you can have as many aliases for any item as you like</p>
+<pre><code class="language-move=">use Std::Vector::{
+    Self,
+    Self as V,
+    length,
+    length as len,
+};
+
+fun pop_twice&lt;T&gt;(v: &amp;mut vector&lt;T&gt;): (T, T) {
+    // all options available given the `use` above
+    assert(Vector::length(v) &gt; 1, 42);
+    assert(V::length(v) &gt; 1, 42);
+    assert(length(v) &gt; 1, 42);
+    assert(len(v) &gt; 1, 42);
+
+    (Vector::pop_back(v), Vector::pop_back(v))
+}
+</code></pre>
+<a class="header" href="uses.html#inside-a-module" id="inside-a-module"><h2>Inside a <code>module</code></h2></a>
+<p>Inside of a <code>module</code> all <code>use</code> declarations are usable regardless of the order of declaration.</p>
+<pre><code class="language-move=">address 0x42 {
+module Example {
+    use Std::Vector;
+
+    fun example(): vector&lt;u8&gt; {
+        let v = empty();
+        Vector::push_back(&amp;mut v, 0);
+        Vector::push_back(&amp;mut v, 10);
+        v
+    }
+
+    use Std::Vector::empty;
+}
+}
+</code></pre>
+<p>The aliases declared by <code>use</code> in the module usable within that module.</p>
+<p>Additionally, the aliases introduced cannot conflict with other module members. See <a href="uses.html#uniqueness">Uniqueness</a> for more details</p>
+<a class="header" href="uses.html#inside-an-expression" id="inside-an-expression"><h2>Inside an expression</h2></a>
+<p>You can add <code>use</code> declarations to the beginning of any expression block</p>
+<pre><code class="language-move=">address 0x42 {
+module Example {
+
+    fun example(): vector&lt;u8&gt; {
+        use Std::Vector::{empty, push_back};
+
+        let v = empty();
+        push_back(&amp;mut v, 0);
+        push_back(&amp;mut v, 10);
+        v
+    }
+}
+}
+</code></pre>
+<p>As with <code>let</code>, the aliases introduced by <code>use</code> in an expression block are removed at the end of that block.</p>
+<pre><code class="language-move=">address 0x42 {
+module Example {
+
+    fun example(): vector&lt;u8&gt; {
+        let result = {
+            use Std::Vector::{empty, push_back};
+            let v = empty();
+            push_back(&amp;mut v, 0);
+            push_back(&amp;mut v, 10);
+            v
+        };
+        result
+    }
+
+}
+}
+</code></pre>
+<p>Attempting to use the alias after the block ends will result in an error</p>
+<pre><code class="language-move=">fun example(): vector&lt;u8&gt; {
+    let result = {
+        use Std::Vector::{empty, push_back};
+        let v = empty();
+        push_back(&amp;mut v, 0);
+        push_back(&amp;mut v, 10);
+        v
+    };
+    let v2 = empty(); // ERROR!
+//           ^^^^^ unbound function 'empty'
+    result
+}
+</code></pre>
+<p>Any <code>use</code> must be the first item in the block. If the <code>use</code> comes after any expression or <code>let</code>, it will result in a parsing error</p>
+<pre><code class="language-move=">{
+    let x = 0;
+    use Std::Vector; // ERROR!
+    let v = Vector::empty();
+}
+</code></pre>
+<a class="header" href="uses.html#naming-rules" id="naming-rules"><h2>Naming rules</h2></a>
+<p>Aliases must follow the same rules as other module members. This means that aliases to structs or constants must start with <code>A</code> to <code>Z</code></p>
+<pre><code class="language-move=">address 0x42 {
+module Data {
+    struct S {}
+    const FLAG: bool = false;
+    fun foo() {}
+}
+module Example {
+    use 0x42::Data::{
+        S as s, // ERROR!
+        FLAG as fLAG, // ERROR!
+        foo as FOO,  // valid
+        foo as bar, // valid
+    };
+}
+}
+</code></pre>
+<a class="header" href="uses.html#uniqueness" id="uniqueness"><h2>Uniqueness</h2></a>
+<p>Inside a given scope, all aliases introduced by <code>use</code> declarations must be unique.</p>
+<p>For a module, this means aliases introduced by <code>use</code> cannot overla</p>
+<pre><code class="language-move=">address 0x42 {
+module Example {
+
+    use Std::Vector::{empty as foo, length as foo}; // ERROR!
+    //                                        ^^^ duplicate 'foo'
+
+    use Std::Vector::empty as bar;
+
+    use Std::Vector::length as bar; // ERROR!
+    //                         ^^^ duplicate 'bar'
+
+}
+}
+</code></pre>
+<p>And, they cannot overlap with any of the module's other members</p>
+<pre><code class="language-move=">address 0x42 {
+module Data {
+    struct S {}
+}
+module Example {
+    use 0x42::Data::S;
+
+    struct S { value: u64 } // ERROR!
+    //     ^ conflicts with alias 'S' above
+}
+}
+</code></pre>
+<p>Inside of an expression block, they cannot overlap with each other, but they can <a href="uses.html#shadowing">shadow</a> other aliases or names from an outer scope</p>
+<a class="header" href="uses.html#shadowing" id="shadowing"><h2>Shadowing</h2></a>
+<p><code>use</code> aliases inside of an expression block can shadow names (module members or aliases) from the outer scope. As with shadowing of locals, the shadowing ends at the end of the expression block;</p>
+<pre><code class="language-move=">address 0x42 {
+module Example {
+
+    struct WrappedVector { vec: vector&lt;u64&gt; }
+
+    fun empty(): WrappedVector {
+        WrappedVector { vec: Std::Vector::empty() }
+    }
+
+    fun example1(): (WrappedVector, WrappedVector) {
+        let vec = {
+            use Std::Vector::{empty, push_back};
+            // 'empty' now refers to Std::Vector::empty
+
+            let v = empty();
+            push_back(&amp;mut v, 0);
+            push_back(&amp;mut v, 1);
+            push_back(&amp;mut v, 10);
+            v
+        };
+        // 'empty' now refers to Self::empty
+
+        (empty(), WrappedVector { vec })
+    }
+
+    fun example2(): (WrappedVector, WrappedVector) {
+        use Std::Vector::{empty, push_back};
+        let w: WrappedVector = {
+            use 0x42::Example::empty;
+            empty()
+        };
+        push_back(&amp;mut w.vec, 0);
+        push_back(&amp;mut w.vec, 1);
+        push_back(&amp;mut w.vec, 10);
+
+        let vec = empty();
+        push_back(&amp;mut vec, 0);
+        push_back(&amp;mut vec, 1);
+        push_back(&amp;mut vec, 10);
+
+        (w, WrappedVector { vec })
+    }
+}
+}
+</code></pre>
+<a class="header" href="uses.html#unused-use-or-alias" id="unused-use-or-alias"><h2>Unused Use or Alias</h2></a>
+<p>An unused <code>use</code> will result in an error</p>
+<pre><code class="language-move=">address 0x42 {
+module Example {
+    use Std::Vector::{empty, push_back}; // ERROR!
+    //                       ^^^^^^^^^ unused alias 'push_back'
+
+    fun example(): vector&lt;u8&gt; {
+        empty()
+    }
+}
+}
+</code></pre>
+
+                </div>
+
+                <!-- Mobile navigation buttons -->
+                
+                    <a rel="prev" href="abilities.html" class="mobile-nav-chapters previous" title="Previous chapter">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a rel="next" href="friends.html" class="mobile-nav-chapters next" title="Next chapter">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+
+            </div>
+
+            
+                <a href="abilities.html" class="nav-chapters previous" title="You can navigate through the chapters using the arrow keys">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+            
+
+            
+                <a href="friends.html" class="nav-chapters next" title="You can navigate through the chapters using the arrow keys">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            
+
+        </div>
+
+
+        <!-- Local fallback for Font Awesome -->
+        <script>
+            if ($(".fa").css("font-family") !== "FontAwesome") {
+                $('<link rel="stylesheet" type="text/css" href="_FontAwesome/css/font-awesome.css">').prependTo('head');
+            }
+        </script>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        
+
+        
+
+        
+
+        
+
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS script -->
+        
+
+    </body>
+</html>

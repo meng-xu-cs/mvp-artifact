@@ -1,0 +1,183 @@
+<!DOCTYPE HTML>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Signer - </title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <base href="">
+
+        <link rel="stylesheet" href="book.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <link rel="shortcut icon" href="favicon.png">
+
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme -->
+        
+
+        
+
+        <!-- Fetch Clipboard.js from CDN but have a local fallback -->
+        <script src="https://cdn.jsdelivr.net/clipboard.js/1.6.1/clipboard.min.js"></script>
+        <script>
+            if (typeof Clipboard == 'undefined') {
+                document.write(unescape("%3Cscript src='clipboard.min.js'%3E%3C/script%3E"));
+            }
+        </script>
+
+        <!-- Fetch JQuery from CDN but have a local fallback -->
+        <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+        <script>
+            if (typeof jQuery == 'undefined') {
+                document.write(unescape("%3Cscript src='jquery.js'%3E%3C/script%3E"));
+            }
+        </script>
+
+        <!-- Fetch store.js from local - TODO add CDN when 2.x.x is available on cdnjs -->
+        <script src="store.js"></script>
+
+    </head>
+    <body class="light">
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme = store.get('mdbook-theme');
+            if (theme === null || theme === undefined) { theme = 'light'; }
+            $('body').removeClass().addClass(theme);
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var sidebar = store.get('mdbook-sidebar');
+            if (sidebar === "hidden") { $("html").addClass("sidebar-hidden") }
+            else if (sidebar === "visible") { $("html").addClass("sidebar-visible") }
+        </script>
+
+        <div id="sidebar" class="sidebar">
+            <ul class="chapter"><li class="affix"><a href="introduction.html">Introduction</a></li><li><a href="modules-and-scripts.html"><strong>1.</strong> Modules and Scripts</a></li><li><a href="creating-coins.html"><strong>2.</strong> First Tutorial: Creating Coins</a></li><li><a href="integers.html"><strong>3.</strong> Integers</a></li><li><a href="bool.html"><strong>4.</strong> Bool</a></li><li><a href="address.html"><strong>5.</strong> Address</a></li><li><a href="vector.html"><strong>6.</strong> Vector</a></li><li><a href="signer.html" class="active"><strong>7.</strong> Signer</a></li><li><a href="references.html"><strong>8.</strong> References</a></li><li><a href="tuples.html"><strong>9.</strong> Tuples and Unit</a></li><li><a href="variables.html"><strong>10.</strong> Local Variables and Scopes</a></li><li><a href="equality.html"><strong>11.</strong> Equality</a></li><li><a href="abort-and-assert.html"><strong>12.</strong> Abort and Assert</a></li><li><a href="conditionals.html"><strong>13.</strong> Conditionals</a></li><li><a href="loops.html"><strong>14.</strong> While and Loop</a></li><li><a href="functions.html"><strong>15.</strong> Functions</a></li><li><a href="structs-and-resources.html"><strong>16.</strong> Structs and Resources</a></li><li><a href="constants.html"><strong>17.</strong> Constants</a></li><li><a href="generics.html"><strong>18.</strong> Generics</a></li><li><a href="abilities.html"><strong>19.</strong> Type Abilities</a></li><li><a href="uses.html"><strong>20.</strong> Uses and Aliases</a></li><li><a href="friends.html"><strong>21.</strong> Friends</a></li><li><a href="global-storage-structure.html"><strong>22.</strong> Global Storage Structure</a></li><li><a href="global-storage-operators.html"><strong>23.</strong> Global Storage Operators</a></li><li><a href="standard-library.html"><strong>24.</strong> Standard Library</a></li><li><a href="coding-conventions.html"><strong>25.</strong> Coding Conventions</a></li></ul>
+        </div>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page" tabindex="-1">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div class="left-buttons">
+                        <i id="sidebar-toggle" class="fa fa-bars" title="Toggle sidebar"></i>
+                        <i id="theme-toggle" class="fa fa-paint-brush" title="Change theme"></i>
+                    </div>
+
+                    <h1 class="menu-title"></h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html">
+                            <i id="print-button" class="fa fa-print" title="Print this book"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="content" class="content">
+                    <a class="header" href="signer.html#signer" id="signer"><h1>Signer</h1></a>
+<p><code>signer</code> is a built-in Move resource type. A <code>signer</code> is a <a href="https://en.wikipedia.org/wiki/Object-capability_model">capability</a> that allows the holder to act on behalf of a particular <code>address</code>. You can think of the native implementation as being:</p>
+<pre><code class="language-move">struct signer has drop { a: address }
+</code></pre>
+<p>A <code>signer</code> is somewhat similar to a Unix <a href="https://en.wikipedia.org/wiki/User_identifier">UID</a> in that it represents a user authenticated by code <em>outside</em> of Move (e.g., by checking a cryptographic signature or password).</p>
+<a class="header" href="signer.html#comparison-to-address" id="comparison-to-address"><h2>Comparison to <code>address</code></h2></a>
+<p>A Move program can create any <code>address</code> value without special permission using address literals:</p>
+<pre><code class="language-move">let a1 = @0x1;
+let a2 = @0x2;
+// ... and so on for every other possible address
+</code></pre>
+<p>However, <code>signer</code> values are special because they cannot be created via literals or instructions--only by the Move VM. Before the VM runs a script with parameters of type <code>signer</code>, it will automatically create <code>signer</code> values and pass them into the script:</p>
+<pre><code class="language-move=">script {
+    use Std::Signer;
+    fun main(s: signer) {
+        assert(Signer::address_of(&amp;s) == @0x42, 0);
+    }
+}
+</code></pre>
+<p>This script will abort with code <code>0</code> if the script is sent from any address other than <code>0x42</code>.</p>
+<p>A transaction script can have an arbitrary number of <code>signer</code>s as long as the signers are a prefix to any other arguments. In other words, all of the signer arguments must come first:</p>
+<pre><code class="language-move=">script {
+    use Std::Signer;
+    fun main(s1: signer, s2: signer, x: u64, y: u8) {
+        // ...
+    }
+}
+</code></pre>
+<p>This is useful for implementing <em>multi-signer scripts</em> that atomically act with the authority of multiple parties. For example, an extension of the script above could perform an atomic currency swap between <code>s1</code> and <code>s2</code>.</p>
+<a class="header" href="signer.html#signer-operators" id="signer-operators"><h2><code>signer</code> Operators</h2></a>
+<p>The <code>Std::Signer</code> standard library module provides two utility functions over <code>signer</code> values:</p>
+<table><thead><tr><th> Function </th><th> Description</th></tr></thead><tbody>
+<tr><td> <code>Signer::address_of(&amp;signer): address</code> </td><td> Return the <code>address</code> wrapped by this <code>&amp;signer</code>.</td></tr>
+<tr><td> <code>Signer::borrow_address(&amp;signer): &amp;address</code> </td><td> Return a reference to the <code>address</code> wrapped by this <code>&amp;signer</code></td></tr>
+</tbody></table>
+<p>In addition, the <code>move_to&lt;T&gt;(&amp;signer, T)</code> <a href="./global-storage-operators.md">global storage operator</a> requires a <code>&amp;signer</code> argument to publish a resource <code>T</code> under <code>signer.address</code>'s account. This ensures that only an authenticated user can elect to publish a resource under their <code>address</code>.</p>
+<a class="header" href="signer.html#ownership" id="ownership"><h2>Ownership</h2></a>
+<p>Unlike simple scalar values, <code>signer</code> values are not copyable, meaning they cannot be copied (from any operation whether it be through an explicit <a href="./variables.md#move-and-copy"><code>copy</code></a> instruction or through a <a href="./references.md#reference-operators">dereference <code>*</code></a>).</p>
+
+                </div>
+
+                <!-- Mobile navigation buttons -->
+                
+                    <a rel="prev" href="vector.html" class="mobile-nav-chapters previous" title="Previous chapter">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a rel="next" href="references.html" class="mobile-nav-chapters next" title="Next chapter">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+
+            </div>
+
+            
+                <a href="vector.html" class="nav-chapters previous" title="You can navigate through the chapters using the arrow keys">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+            
+
+            
+                <a href="references.html" class="nav-chapters next" title="You can navigate through the chapters using the arrow keys">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            
+
+        </div>
+
+
+        <!-- Local fallback for Font Awesome -->
+        <script>
+            if ($(".fa").css("font-family") !== "FontAwesome") {
+                $('<link rel="stylesheet" type="text/css" href="_FontAwesome/css/font-awesome.css">').prependTo('head');
+            }
+        </script>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        
+
+        
+
+        
+
+        
+
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS script -->
+        
+
+    </body>
+</html>

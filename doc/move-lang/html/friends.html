@@ -1,0 +1,266 @@
+<!DOCTYPE HTML>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Friends - </title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <base href="">
+
+        <link rel="stylesheet" href="book.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <link rel="shortcut icon" href="favicon.png">
+
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme -->
+        
+
+        
+
+        <!-- Fetch Clipboard.js from CDN but have a local fallback -->
+        <script src="https://cdn.jsdelivr.net/clipboard.js/1.6.1/clipboard.min.js"></script>
+        <script>
+            if (typeof Clipboard == 'undefined') {
+                document.write(unescape("%3Cscript src='clipboard.min.js'%3E%3C/script%3E"));
+            }
+        </script>
+
+        <!-- Fetch JQuery from CDN but have a local fallback -->
+        <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+        <script>
+            if (typeof jQuery == 'undefined') {
+                document.write(unescape("%3Cscript src='jquery.js'%3E%3C/script%3E"));
+            }
+        </script>
+
+        <!-- Fetch store.js from local - TODO add CDN when 2.x.x is available on cdnjs -->
+        <script src="store.js"></script>
+
+    </head>
+    <body class="light">
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme = store.get('mdbook-theme');
+            if (theme === null || theme === undefined) { theme = 'light'; }
+            $('body').removeClass().addClass(theme);
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var sidebar = store.get('mdbook-sidebar');
+            if (sidebar === "hidden") { $("html").addClass("sidebar-hidden") }
+            else if (sidebar === "visible") { $("html").addClass("sidebar-visible") }
+        </script>
+
+        <div id="sidebar" class="sidebar">
+            <ul class="chapter"><li class="affix"><a href="introduction.html">Introduction</a></li><li><a href="modules-and-scripts.html"><strong>1.</strong> Modules and Scripts</a></li><li><a href="creating-coins.html"><strong>2.</strong> First Tutorial: Creating Coins</a></li><li><a href="integers.html"><strong>3.</strong> Integers</a></li><li><a href="bool.html"><strong>4.</strong> Bool</a></li><li><a href="address.html"><strong>5.</strong> Address</a></li><li><a href="vector.html"><strong>6.</strong> Vector</a></li><li><a href="signer.html"><strong>7.</strong> Signer</a></li><li><a href="references.html"><strong>8.</strong> References</a></li><li><a href="tuples.html"><strong>9.</strong> Tuples and Unit</a></li><li><a href="variables.html"><strong>10.</strong> Local Variables and Scopes</a></li><li><a href="equality.html"><strong>11.</strong> Equality</a></li><li><a href="abort-and-assert.html"><strong>12.</strong> Abort and Assert</a></li><li><a href="conditionals.html"><strong>13.</strong> Conditionals</a></li><li><a href="loops.html"><strong>14.</strong> While and Loop</a></li><li><a href="functions.html"><strong>15.</strong> Functions</a></li><li><a href="structs-and-resources.html"><strong>16.</strong> Structs and Resources</a></li><li><a href="constants.html"><strong>17.</strong> Constants</a></li><li><a href="generics.html"><strong>18.</strong> Generics</a></li><li><a href="abilities.html"><strong>19.</strong> Type Abilities</a></li><li><a href="uses.html"><strong>20.</strong> Uses and Aliases</a></li><li><a href="friends.html" class="active"><strong>21.</strong> Friends</a></li><li><a href="global-storage-structure.html"><strong>22.</strong> Global Storage Structure</a></li><li><a href="global-storage-operators.html"><strong>23.</strong> Global Storage Operators</a></li><li><a href="standard-library.html"><strong>24.</strong> Standard Library</a></li><li><a href="coding-conventions.html"><strong>25.</strong> Coding Conventions</a></li></ul>
+        </div>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page" tabindex="-1">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div class="left-buttons">
+                        <i id="sidebar-toggle" class="fa fa-bars" title="Toggle sidebar"></i>
+                        <i id="theme-toggle" class="fa fa-paint-brush" title="Change theme"></i>
+                    </div>
+
+                    <h1 class="menu-title"></h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html">
+                            <i id="print-button" class="fa fa-print" title="Print this book"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="content" class="content">
+                    <a class="header" href="friends.html#friends" id="friends"><h1>Friends</h1></a>
+<p>The <code>friend</code> syntax is used to declare modules that are trusted by the current module.
+A trusted module is allowed to call any function defined in the current module that have the <code>public(friend)</code> visibility.
+For details on function visibilities, please refer to the <em>Visibility</em> section in <a href="./functions.md">Functions</a>.</p>
+<a class="header" href="friends.html#friend-declaration" id="friend-declaration"><h2>Friend declaration</h2></a>
+<p>A module can declare other modules as friends via friend declaration statements, in the format of</p>
+<ul>
+<li>
+<p><code>friend &lt;address::name&gt;</code> — friend declaration using fully qualified module name like the example below, or</p>
+<pre><code class="language-move">address 0x42 {
+module A {
+    friend 0x42::B;
+}
+}
+</code></pre>
+</li>
+<li>
+<p><code>friend &lt;module-name-alias&gt;</code> — friend declaration using a module name alias, where the module alias is introduced via the <code>use</code> statement.</p>
+<pre><code class="language-move">address 0x42 {
+module A {
+    use 0x42::B;
+    friend B;
+}
+}
+</code></pre>
+</li>
+</ul>
+<p>A module may have multiple friend declarations, and the union of all the friend modules forms the friend list.
+In the example below, both <code>0x42::B</code> and <code>0x42::C</code> are considered as friends of <code>0x42::A</code>.</p>
+<pre><code class="language-move">address 0x42 {
+module A {
+    friend 0x42::B;
+    friend 0x42::C;
+}
+}
+</code></pre>
+<p>Unlike <code>use</code> statements, <code>friend</code> can only be declared in the module scope and not in the expression block scope.
+<code>friend</code> declarations may be located anywhere a top-level construct (e.g., <code>use</code>, <code>function</code>, <code>struct</code>, etc.) is allowed.
+However, for readability, it is advised to place friend declarations near the beginning of the module definition.</p>
+<p>Note that the concept of friendship does not apply to Move scripts:</p>
+<ul>
+<li>A Move script cannot declare <code>friend</code> modules as doing so is considered meaningless: there is no mechanism to call the function defined in a script.</li>
+<li>A Move module cannot declare <code>friend</code> scripts as well because scripts are ephemeral code snippets that are never published to global storage.</li>
+</ul>
+<a class="header" href="friends.html#friend-declaration-rules" id="friend-declaration-rules"><h3>Friend declaration rules</h3></a>
+<p>Friend declarations are subject to the following rules:</p>
+<ul>
+<li>
+<p>A module cannot declare itself as a friend.</p>
+<pre><code class="language-move=">address 0x42 {
+module M { friend Self; // ERROR! }
+//                ^^^^ Cannot declare the module itself as a friend
+}
+
+address 0x43 {
+module M { friend 0x43::M; // ERROR! }
+//                ^^^^^^^ Cannot declare the module itself as a friend
+}
+</code></pre>
+</li>
+<li>
+<p>Friend modules must be known by the compiler</p>
+<pre><code class="language-move=">address 0x42 {
+module M { friend 0x42::Nonexistent; // ERROR! }
+//                ^^^^^^^^^^^^^^^^^ Unbound module '0x42::Nonexistent'
+}
+</code></pre>
+</li>
+<li>
+<p>Friend modules must be within the same account address. (Note: this is not a technical requirement but rather a policy decision which <em>may</em> be relaxed later.)</p>
+<pre><code class="language-move=">address 0x42 {
+module M {}
+}
+
+address 0x43 {
+module N { friend 0x42::M; // ERROR! }
+//                ^^^^^^^ Cannot declare modules out of the current address as a friend
+}
+</code></pre>
+</li>
+<li>
+<p>Friends relationships cannot create cyclic module dependencies.</p>
+<p>Cycles are not allowed in the friend relationships, e.g., the relation <code>0x2::A</code> friends <code>0x2::B</code> friends <code>0x2::C</code> friends <code>0x2::A</code> is not allowed.
+More generally, declaring a friend module adds a dependency upon the current module to the friend module (because the purpose is for the friend to call functions in the current module).
+If that friend module is already used, either directly or transitively, a cycle of dependencies would be created.</p>
+<pre><code class="language-move=">address 0x2 {
+module A {
+    use 0x2::C;
+    friend 0x2::B;
+
+    public fun a() {
+        C::c()
+    }
+}
+
+module B {
+    friend 0x2::C; // ERROR!
+//         ^^^^^^ This friend relationship creates a dependency cycle: '0x2::B' is a friend of '0x2::A' uses '0x2::C' is a friend of '0x2::B'
+}
+
+module C {
+    public fun c() {}
+}
+}
+</code></pre>
+</li>
+<li>
+<p>The friend list for a module cannot contain duplicates.</p>
+<pre><code class="language-move=">address 0x42 {
+module A {}
+
+module M {
+    use 0x42::A as AliasedA;
+    friend 0x42::A;
+    friend AliasedA; // ERROR!
+//         ^^^^^^^^ Duplicate friend declaration '0x42::A'. Friend declarations in a module must be unique
+}
+}
+</code></pre>
+</li>
+</ul>
+
+                </div>
+
+                <!-- Mobile navigation buttons -->
+                
+                    <a rel="prev" href="uses.html" class="mobile-nav-chapters previous" title="Previous chapter">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a rel="next" href="global-storage-structure.html" class="mobile-nav-chapters next" title="Next chapter">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+
+            </div>
+
+            
+                <a href="uses.html" class="nav-chapters previous" title="You can navigate through the chapters using the arrow keys">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+            
+
+            
+                <a href="global-storage-structure.html" class="nav-chapters next" title="You can navigate through the chapters using the arrow keys">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            
+
+        </div>
+
+
+        <!-- Local fallback for Font Awesome -->
+        <script>
+            if ($(".fa").css("font-family") !== "FontAwesome") {
+                $('<link rel="stylesheet" type="text/css" href="_FontAwesome/css/font-awesome.css">').prependTo('head');
+            }
+        </script>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        
+
+        
+
+        
+
+        
+
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS script -->
+        
+
+    </body>
+</html>

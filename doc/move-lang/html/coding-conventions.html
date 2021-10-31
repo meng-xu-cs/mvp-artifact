@@ -1,0 +1,202 @@
+<!DOCTYPE HTML>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Coding Conventions - </title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <base href="">
+
+        <link rel="stylesheet" href="book.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <link rel="shortcut icon" href="favicon.png">
+
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme -->
+        
+
+        
+
+        <!-- Fetch Clipboard.js from CDN but have a local fallback -->
+        <script src="https://cdn.jsdelivr.net/clipboard.js/1.6.1/clipboard.min.js"></script>
+        <script>
+            if (typeof Clipboard == 'undefined') {
+                document.write(unescape("%3Cscript src='clipboard.min.js'%3E%3C/script%3E"));
+            }
+        </script>
+
+        <!-- Fetch JQuery from CDN but have a local fallback -->
+        <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+        <script>
+            if (typeof jQuery == 'undefined') {
+                document.write(unescape("%3Cscript src='jquery.js'%3E%3C/script%3E"));
+            }
+        </script>
+
+        <!-- Fetch store.js from local - TODO add CDN when 2.x.x is available on cdnjs -->
+        <script src="store.js"></script>
+
+    </head>
+    <body class="light">
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme = store.get('mdbook-theme');
+            if (theme === null || theme === undefined) { theme = 'light'; }
+            $('body').removeClass().addClass(theme);
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var sidebar = store.get('mdbook-sidebar');
+            if (sidebar === "hidden") { $("html").addClass("sidebar-hidden") }
+            else if (sidebar === "visible") { $("html").addClass("sidebar-visible") }
+        </script>
+
+        <div id="sidebar" class="sidebar">
+            <ul class="chapter"><li class="affix"><a href="introduction.html">Introduction</a></li><li><a href="modules-and-scripts.html"><strong>1.</strong> Modules and Scripts</a></li><li><a href="creating-coins.html"><strong>2.</strong> First Tutorial: Creating Coins</a></li><li><a href="integers.html"><strong>3.</strong> Integers</a></li><li><a href="bool.html"><strong>4.</strong> Bool</a></li><li><a href="address.html"><strong>5.</strong> Address</a></li><li><a href="vector.html"><strong>6.</strong> Vector</a></li><li><a href="signer.html"><strong>7.</strong> Signer</a></li><li><a href="references.html"><strong>8.</strong> References</a></li><li><a href="tuples.html"><strong>9.</strong> Tuples and Unit</a></li><li><a href="variables.html"><strong>10.</strong> Local Variables and Scopes</a></li><li><a href="equality.html"><strong>11.</strong> Equality</a></li><li><a href="abort-and-assert.html"><strong>12.</strong> Abort and Assert</a></li><li><a href="conditionals.html"><strong>13.</strong> Conditionals</a></li><li><a href="loops.html"><strong>14.</strong> While and Loop</a></li><li><a href="functions.html"><strong>15.</strong> Functions</a></li><li><a href="structs-and-resources.html"><strong>16.</strong> Structs and Resources</a></li><li><a href="constants.html"><strong>17.</strong> Constants</a></li><li><a href="generics.html"><strong>18.</strong> Generics</a></li><li><a href="abilities.html"><strong>19.</strong> Type Abilities</a></li><li><a href="uses.html"><strong>20.</strong> Uses and Aliases</a></li><li><a href="friends.html"><strong>21.</strong> Friends</a></li><li><a href="global-storage-structure.html"><strong>22.</strong> Global Storage Structure</a></li><li><a href="global-storage-operators.html"><strong>23.</strong> Global Storage Operators</a></li><li><a href="standard-library.html"><strong>24.</strong> Standard Library</a></li><li><a href="coding-conventions.html" class="active"><strong>25.</strong> Coding Conventions</a></li></ul>
+        </div>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page" tabindex="-1">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div class="left-buttons">
+                        <i id="sidebar-toggle" class="fa fa-bars" title="Toggle sidebar"></i>
+                        <i id="theme-toggle" class="fa fa-paint-brush" title="Change theme"></i>
+                    </div>
+
+                    <h1 class="menu-title"></h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html">
+                            <i id="print-button" class="fa fa-print" title="Print this book"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="content" class="content">
+                    <a class="header" href="coding-conventions.html#move-coding-conventions" id="move-coding-conventions"><h1>Move Coding Conventions</h1></a>
+<p>This section lays out some basic coding conventions for Move that the Move team has found helpful. These are only recommendations, and you should feel free to use other formatting guidelines and conventions if you have a preference for them.</p>
+<a class="header" href="coding-conventions.html#naming" id="naming"><h2>Naming</h2></a>
+<ul>
+<li><strong>Module names</strong>: should be camel case, e.g., <code>FixedPoint32</code>, <code>Vector</code></li>
+<li><strong>Type names</strong>: should be camel case if they are not a native type, e.g., <code>Coin</code>, <code>RoleId</code></li>
+<li><strong>Function names</strong>: should be lower snake case, e.g., <code>destroy_empty</code></li>
+<li><strong>Constant names</strong>: should be upper snake case, e.g., <code>REQUIRES_CAPABILITY</code></li>
+<li>Generic types should be descriptive, or anti-descriptive where appropriate, e.g., <code>T</code> or <code>Element</code> for the Vector generic type parameter. Most of the time the &quot;main&quot; type in a module should be the same name as the module e.g., <code>Option::Option</code>, <code>FixedPoint32::FixedPoint32</code>.</li>
+<li><strong>Module file names</strong>: should be the same as the module name e.g., <code>Option.move</code></li>
+<li><strong>Script file names</strong>: should be lower snake case and should match the name of the “main” function in the script.</li>
+<li><strong>Mixed file names</strong>: If the file contains multiple modules and/or scripts, the file name should be lower_snake_case, where the name does not match any particular module/script inside.</li>
+</ul>
+<a class="header" href="coding-conventions.html#imports" id="imports"><h2>Imports</h2></a>
+<ul>
+<li>All module <code>use</code> statements should be at the top of the module.</li>
+<li>Functions should be imported and used fully qualified from the module in which they are declared, and not imported at the top level.</li>
+<li>Types should be imported at the top-level. Where there are name clashes, <code>as</code> should be used to rename the type locally as appropriate.</li>
+</ul>
+<p>For example, if there is a module</p>
+<pre><code class="language-move=">module 0x1::Foo {
+    struct Foo { }
+    const CONST_FOO: u64 = 0;
+    public fun do_foo(): Foo { Foo{} }
+    ...
+}
+</code></pre>
+<p>this would be imported and used as:</p>
+<pre><code class="language-move=">module 0x1::Bar {
+    use 0x1::Foo::{Self, Foo};
+
+    public fun do_bar(x: u64): Foo {
+        if (x == 10) {
+            Foo::do_foo()
+        } else {
+            abort 0
+        }
+    }
+    ...
+}
+</code></pre>
+<p>And, if there is a local name-clash when importing two modules:</p>
+<pre><code class="language-move=">module OtherFoo {
+    struct Foo {}
+    ...
+}
+
+module 0x1::Importer {
+    use 0x1::OtherFoo::Foo as OtherFoo;
+    use 0x1::Foo::Foo;
+....
+}
+</code></pre>
+<a class="header" href="coding-conventions.html#comments" id="comments"><h2>Comments</h2></a>
+<ul>
+<li>Each module, struct, and public function declaration should be commented</li>
+<li>Move has both doc comments <code>///</code>, regular single-line comments <code>//</code>, and block comments <code>/* */</code></li>
+</ul>
+<a class="header" href="coding-conventions.html#formatting" id="formatting"><h2>Formatting</h2></a>
+<p>The Move team plans to write an autoformatter to enforce formatting conventions. However, in the meantime:</p>
+<ul>
+<li>Four space indentation should be used except for <code>script</code> and <code>address</code> blocks whose contents should not be indented</li>
+<li>Lines should be broken if they are longer than 100 characters</li>
+<li>Structs and constants should be declared before all functions in a module</li>
+</ul>
+
+                </div>
+
+                <!-- Mobile navigation buttons -->
+                
+                    <a rel="prev" href="standard-library.html" class="mobile-nav-chapters previous" title="Previous chapter">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+
+            </div>
+
+            
+                <a href="standard-library.html" class="nav-chapters previous" title="You can navigate through the chapters using the arrow keys">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+            
+
+            
+
+        </div>
+
+
+        <!-- Local fallback for Font Awesome -->
+        <script>
+            if ($(".fa").css("font-family") !== "FontAwesome") {
+                $('<link rel="stylesheet" type="text/css" href="_FontAwesome/css/font-awesome.css">').prependTo('head');
+            }
+        </script>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        
+
+        
+
+        
+
+        
+
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS script -->
+        
+
+    </body>
+</html>

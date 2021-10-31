@@ -1,0 +1,201 @@
+<!DOCTYPE HTML>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Address - </title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <base href="">
+
+        <link rel="stylesheet" href="book.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <link rel="shortcut icon" href="favicon.png">
+
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme -->
+        
+
+        
+
+        <!-- Fetch Clipboard.js from CDN but have a local fallback -->
+        <script src="https://cdn.jsdelivr.net/clipboard.js/1.6.1/clipboard.min.js"></script>
+        <script>
+            if (typeof Clipboard == 'undefined') {
+                document.write(unescape("%3Cscript src='clipboard.min.js'%3E%3C/script%3E"));
+            }
+        </script>
+
+        <!-- Fetch JQuery from CDN but have a local fallback -->
+        <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+        <script>
+            if (typeof jQuery == 'undefined') {
+                document.write(unescape("%3Cscript src='jquery.js'%3E%3C/script%3E"));
+            }
+        </script>
+
+        <!-- Fetch store.js from local - TODO add CDN when 2.x.x is available on cdnjs -->
+        <script src="store.js"></script>
+
+    </head>
+    <body class="light">
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme = store.get('mdbook-theme');
+            if (theme === null || theme === undefined) { theme = 'light'; }
+            $('body').removeClass().addClass(theme);
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var sidebar = store.get('mdbook-sidebar');
+            if (sidebar === "hidden") { $("html").addClass("sidebar-hidden") }
+            else if (sidebar === "visible") { $("html").addClass("sidebar-visible") }
+        </script>
+
+        <div id="sidebar" class="sidebar">
+            <ul class="chapter"><li class="affix"><a href="introduction.html">Introduction</a></li><li><a href="modules-and-scripts.html"><strong>1.</strong> Modules and Scripts</a></li><li><a href="creating-coins.html"><strong>2.</strong> First Tutorial: Creating Coins</a></li><li><a href="integers.html"><strong>3.</strong> Integers</a></li><li><a href="bool.html"><strong>4.</strong> Bool</a></li><li><a href="address.html" class="active"><strong>5.</strong> Address</a></li><li><a href="vector.html"><strong>6.</strong> Vector</a></li><li><a href="signer.html"><strong>7.</strong> Signer</a></li><li><a href="references.html"><strong>8.</strong> References</a></li><li><a href="tuples.html"><strong>9.</strong> Tuples and Unit</a></li><li><a href="variables.html"><strong>10.</strong> Local Variables and Scopes</a></li><li><a href="equality.html"><strong>11.</strong> Equality</a></li><li><a href="abort-and-assert.html"><strong>12.</strong> Abort and Assert</a></li><li><a href="conditionals.html"><strong>13.</strong> Conditionals</a></li><li><a href="loops.html"><strong>14.</strong> While and Loop</a></li><li><a href="functions.html"><strong>15.</strong> Functions</a></li><li><a href="structs-and-resources.html"><strong>16.</strong> Structs and Resources</a></li><li><a href="constants.html"><strong>17.</strong> Constants</a></li><li><a href="generics.html"><strong>18.</strong> Generics</a></li><li><a href="abilities.html"><strong>19.</strong> Type Abilities</a></li><li><a href="uses.html"><strong>20.</strong> Uses and Aliases</a></li><li><a href="friends.html"><strong>21.</strong> Friends</a></li><li><a href="global-storage-structure.html"><strong>22.</strong> Global Storage Structure</a></li><li><a href="global-storage-operators.html"><strong>23.</strong> Global Storage Operators</a></li><li><a href="standard-library.html"><strong>24.</strong> Standard Library</a></li><li><a href="coding-conventions.html"><strong>25.</strong> Coding Conventions</a></li></ul>
+        </div>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page" tabindex="-1">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div class="left-buttons">
+                        <i id="sidebar-toggle" class="fa fa-bars" title="Toggle sidebar"></i>
+                        <i id="theme-toggle" class="fa fa-paint-brush" title="Change theme"></i>
+                    </div>
+
+                    <h1 class="menu-title"></h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html">
+                            <i id="print-button" class="fa fa-print" title="Print this book"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="content" class="content">
+                    <a class="header" href="address.html#address" id="address"><h1>Address</h1></a>
+<p><code>address</code> is a built-in type in Move that is used to represent locations (sometimes called accounts) in global storage. An <code>address</code> value is a 128-bit (16 byte) identifier. At a given address, two things can be stored: <a href="./modules-and-scripts.md">Modules</a> and <a href="./structs-and-resources.md">Resources</a>.</p>
+<p>Although an <code>address</code> is a 128 bit integer under the hood, Move addresses are intentionally opaque---they cannot be created from integers, they do not support arithmetic operations, and they cannot be modified. Even though there might be interesting programs that would use such a feature (e.g., pointer arithmetic in C fills a similar niche), Move does not allow this dynamic behavior because it has been designed from the ground up to support static verification.</p>
+<p>You can use runtime address values (values of type <code>address</code>) to access resources at that address. You <em>cannot</em> access modules at runtime via address values.</p>
+<a class="header" href="address.html#addresses-and-their-syntax" id="addresses-and-their-syntax"><h2>Addresses and Their Syntax</h2></a>
+<p>Addresses come in two flavors, named or numerical. The syntax for a named address follows the
+same rules for any named identifier in Move. The syntax of a numerical address is not restricted
+to hex-encoded values, and any valid <a href="./integers.md"><code>u128</code> numerical value</a> can be used as an
+address value, e.g., <code>42</code>, <code>0xCAFE</code>, and <code>2021</code> are all valid numerical address
+literals.</p>
+<p>To distinguish when an address is being used in an expression context or not, the
+syntax when using an address differs depending on the context where it's used:</p>
+<ul>
+<li>When an address is used as an expression the address must be prefixed by the <code>@</code> character, i.e., <code>@</code><a href="./integers.md"><code>&lt;numerical_value&gt;</code></a><code>or</code>@&lt;named_address_identifier&gt;`.</li>
+<li>Outside of expression contexts, the address may be written without the leading <code>@</code> character, i.e., <a href="./integers.md"><code>&lt;numerical_value&gt;</code></a> or <code>&lt;named_address_identifier&gt;</code>.</li>
+</ul>
+<p>In general, you can think of <code>@</code> as an operator that takes an address from being a namespace item to being an expression item.</p>
+<a class="header" href="address.html#named-addresses" id="named-addresses"><h2>Named Addresses</h2></a>
+<p>Named addresses are a feature that allow identifiers to be used in place of
+numerical values in any spot where addresses are used, and not just at the
+value level.  Named addresses are declared and bound as top level elements
+(outside of modules and scripts) in Move Packages, or passed as arguments
+to the Move compiler.</p>
+<p>Named addresses only exist at the source language level and will be fully
+substituted for their value at the bytecode level. Because of this, modules
+and module members <em>must</em> be accessed through the module's named address
+and not through the numerical value assigned to the named address during
+compilation, e.g., <code>use MyAddr::Foo</code> is <em>not</em> equivalent to <code>use 0x2::Foo</code>
+even if the Move program is compiled with <code>MyAddr</code> set to <code>0x2</code>. This
+distinction is discussed in more detail in the section on <a href="./modules-and-scripts.md">Modules and
+Scripts</a>.</p>
+<a class="header" href="address.html#examples" id="examples"><h3>Examples</h3></a>
+<pre><code class="language-move">let a1: address = @0x1; // shorthand for 0x00000000000000000000000000000001
+let a2: address = @0x42; // shorthand for 0x00000000000000000000000000000042
+let a3: address = @0xDEADBEEF; // shorthand for 0x000000000000000000000000DEADBEEF
+let a4: address = @0x0000000000000000000000000000000A;
+let a5: address = @Std; // Assigns `a5` the value of the named address `Std`
+let a6: address = @66;
+let a7: address = @0x42;
+
+module 66::SomeModule {   // Not in expression context, so no @ needed
+    use 0x1::OtherModule; // Not in expression context so no @ needed
+    use Std::Vector;      // Can use a named address as a namespace item when using other modules
+    ...
+}
+
+module Std::OtherModule {  // Can use a named address as a namespace item to declare a module
+    ...
+}
+</code></pre>
+<a class="header" href="address.html#global-storage-operations" id="global-storage-operations"><h2>Global Storage Operations</h2></a>
+<p>The primary purpose of <code>address</code> values are to interact with the global storage operations.</p>
+<p><code>address</code> values are used with the <code>exists</code>, <code>borrow_global</code>, <code>borrow_global_mut</code>, and <code>move_from</code> <a href="./global-storage-operators.md">operations</a>.</p>
+<p>The only global storage operation that <em>does not</em> use <code>address</code> is <code>move_to</code>, which uses <a href="./signer.md"><code>signer</code></a>.</p>
+<a class="header" href="address.html#ownership" id="ownership"><h2>Ownership</h2></a>
+<p>As with the other scalar values built-in to the language, <code>address</code> values are implicitly copyable, meaning they can be copied without an explicit instruction such as <a href="./variables.md#move-and-copy"><code>copy</code></a>.</p>
+
+                </div>
+
+                <!-- Mobile navigation buttons -->
+                
+                    <a rel="prev" href="bool.html" class="mobile-nav-chapters previous" title="Previous chapter">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a rel="next" href="vector.html" class="mobile-nav-chapters next" title="Next chapter">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+
+            </div>
+
+            
+                <a href="bool.html" class="nav-chapters previous" title="You can navigate through the chapters using the arrow keys">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+            
+
+            
+                <a href="vector.html" class="nav-chapters next" title="You can navigate through the chapters using the arrow keys">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            
+
+        </div>
+
+
+        <!-- Local fallback for Font Awesome -->
+        <script>
+            if ($(".fa").css("font-family") !== "FontAwesome") {
+                $('<link rel="stylesheet" type="text/css" href="_FontAwesome/css/font-awesome.css">').prependTo('head');
+            }
+        </script>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        
+
+        
+
+        
+
+        
+
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS script -->
+        
+
+    </body>
+</html>

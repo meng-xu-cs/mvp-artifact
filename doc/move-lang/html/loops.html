@@ -1,0 +1,283 @@
+<!DOCTYPE HTML>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>While and Loop - </title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <base href="">
+
+        <link rel="stylesheet" href="book.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <link rel="shortcut icon" href="favicon.png">
+
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme -->
+        
+
+        
+
+        <!-- Fetch Clipboard.js from CDN but have a local fallback -->
+        <script src="https://cdn.jsdelivr.net/clipboard.js/1.6.1/clipboard.min.js"></script>
+        <script>
+            if (typeof Clipboard == 'undefined') {
+                document.write(unescape("%3Cscript src='clipboard.min.js'%3E%3C/script%3E"));
+            }
+        </script>
+
+        <!-- Fetch JQuery from CDN but have a local fallback -->
+        <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+        <script>
+            if (typeof jQuery == 'undefined') {
+                document.write(unescape("%3Cscript src='jquery.js'%3E%3C/script%3E"));
+            }
+        </script>
+
+        <!-- Fetch store.js from local - TODO add CDN when 2.x.x is available on cdnjs -->
+        <script src="store.js"></script>
+
+    </head>
+    <body class="light">
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme = store.get('mdbook-theme');
+            if (theme === null || theme === undefined) { theme = 'light'; }
+            $('body').removeClass().addClass(theme);
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var sidebar = store.get('mdbook-sidebar');
+            if (sidebar === "hidden") { $("html").addClass("sidebar-hidden") }
+            else if (sidebar === "visible") { $("html").addClass("sidebar-visible") }
+        </script>
+
+        <div id="sidebar" class="sidebar">
+            <ul class="chapter"><li class="affix"><a href="introduction.html">Introduction</a></li><li><a href="modules-and-scripts.html"><strong>1.</strong> Modules and Scripts</a></li><li><a href="creating-coins.html"><strong>2.</strong> First Tutorial: Creating Coins</a></li><li><a href="integers.html"><strong>3.</strong> Integers</a></li><li><a href="bool.html"><strong>4.</strong> Bool</a></li><li><a href="address.html"><strong>5.</strong> Address</a></li><li><a href="vector.html"><strong>6.</strong> Vector</a></li><li><a href="signer.html"><strong>7.</strong> Signer</a></li><li><a href="references.html"><strong>8.</strong> References</a></li><li><a href="tuples.html"><strong>9.</strong> Tuples and Unit</a></li><li><a href="variables.html"><strong>10.</strong> Local Variables and Scopes</a></li><li><a href="equality.html"><strong>11.</strong> Equality</a></li><li><a href="abort-and-assert.html"><strong>12.</strong> Abort and Assert</a></li><li><a href="conditionals.html"><strong>13.</strong> Conditionals</a></li><li><a href="loops.html" class="active"><strong>14.</strong> While and Loop</a></li><li><a href="functions.html"><strong>15.</strong> Functions</a></li><li><a href="structs-and-resources.html"><strong>16.</strong> Structs and Resources</a></li><li><a href="constants.html"><strong>17.</strong> Constants</a></li><li><a href="generics.html"><strong>18.</strong> Generics</a></li><li><a href="abilities.html"><strong>19.</strong> Type Abilities</a></li><li><a href="uses.html"><strong>20.</strong> Uses and Aliases</a></li><li><a href="friends.html"><strong>21.</strong> Friends</a></li><li><a href="global-storage-structure.html"><strong>22.</strong> Global Storage Structure</a></li><li><a href="global-storage-operators.html"><strong>23.</strong> Global Storage Operators</a></li><li><a href="standard-library.html"><strong>24.</strong> Standard Library</a></li><li><a href="coding-conventions.html"><strong>25.</strong> Coding Conventions</a></li></ul>
+        </div>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page" tabindex="-1">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div class="left-buttons">
+                        <i id="sidebar-toggle" class="fa fa-bars" title="Toggle sidebar"></i>
+                        <i id="theme-toggle" class="fa fa-paint-brush" title="Change theme"></i>
+                    </div>
+
+                    <h1 class="menu-title"></h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html">
+                            <i id="print-button" class="fa fa-print" title="Print this book"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="content" class="content">
+                    <a class="header" href="loops.html#while-and-loop" id="while-and-loop"><h1>While and Loop</h1></a>
+<p>Move offers two constructs for looping: <code>while</code> and <code>loop</code>.</p>
+<a class="header" href="loops.html#while-loops" id="while-loops"><h2><code>while</code> loops</h2></a>
+<p>The <code>while</code> construct repeats the body (an expression of type unit) until the condition (an expression of type <code>bool</code>) evaluates to <code>false</code>.</p>
+<p>Here is an example of simple <code>while</code> loop that computes the sum of the numbers from <code>1</code> to <code>n</code>:</p>
+<pre><code class="language-move=">fun sum(n: u64): u64 {
+    let sum = 0;
+    let i = 1;
+    while (i &lt;= n) {
+        sum = sum + i;
+        i = i + 1
+    };
+
+    sum
+}
+</code></pre>
+<p>Infinite loops are allowed:</p>
+<pre><code class="language-move=">fun foo() {
+    while (true) { }
+}
+</code></pre>
+<a class="header" href="loops.html#break" id="break"><h3><code>break</code></h3></a>
+<p>The <code>break</code> expression can be used to exit a loop before the condition evaluates to <code>false</code>. For example, this loop uses <code>break</code> to find the smallest factor of <code>n</code> that's greater than 1:</p>
+<pre><code class="language-move=">fun upper_bound_sqrt(n: u64): u64 {
+    // assuming the input is not 0 or 1
+    let i = 2;
+    while (i &lt;= n) {
+        if (n % i == 0) break;
+        i = i + 1
+    };
+
+    i
+}
+</code></pre>
+<p>The <code>break</code> expression cannot be used outside of a loop.</p>
+<a class="header" href="loops.html#continue" id="continue"><h3><code>continue</code></h3></a>
+<p>The <code>continue</code> expression skips the rest of the loop and continuess to the next iteration. This loop uses <code>continue</code> to compute the sum of <code>1, 2, ..., n</code>, except when the number is divisible by 10:</p>
+<pre><code class="language-move=">fun sum_intermediate(n: u64): u64 {
+    let sum = 0;
+    let i = 1;
+    while (i &lt;= n) {
+        if (i % 10 == 0) continue;
+        sum = sum + i;
+        i = i + 1
+    };
+
+    sum
+}
+</code></pre>
+<p>The <code>continue</code> expression cannot be used outside of a loop.</p>
+<a class="header" href="loops.html#the-type-of-break-and-continue" id="the-type-of-break-and-continue"><h3>The type of <code>break</code> and <code>continue</code></h3></a>
+<p><code>break</code> and <code>continue</code>, much like <code>return</code> and <code>abort</code>, can have any type. The following examples illustrate where this flexible typing can be helpful:</p>
+<pre><code class="language-move=">fun pop_smallest_while_not_equal(
+    v1: vector&lt;u64&gt;,
+    v2: vector&lt;u64&gt;,
+): vector&lt;u64&gt; {
+    let result = Vector::empty();
+    while (!Vector::is_empty(&amp;v1) &amp;&amp; !Vector::is_empty(&amp;v2)) {
+        let u1 = *Vector::borrow(&amp;v1, Vector::length(&amp;v1) - 1);
+        let u2 = *Vector::borrow(&amp;v1, Vector::length(&amp;v1) - 1);
+        let popped =
+            if (u1 &lt; u2) Vector::pop_back(&amp;mut v1)
+            else if (u2 &lt; u1) Vector::pop_back(&amp;mut v2)
+            else break; // Here, `break` has type `u64`
+        Vector::push_back(&amp;mut result, popped);
+    };
+
+    result
+}
+</code></pre>
+<pre><code class="language-move=">fun pick(
+    indexes: vector&lt;u64&gt;,
+    v1: &amp;vector&lt;address&gt;,
+    v2: &amp;vector&lt;address&gt;
+): vector&lt;address&gt; {
+    let len1 = Vector::length(v1);
+    let len2 = Vector::length(v2);
+    let result = Vector::empty();
+    while (!Vector::is_empty(&amp;indexes)) {
+        let index = Vector::pop_back(&amp;mut indexes);
+        let chosen_vector =
+            if (index &lt; len1) v1
+            else if (index &lt; len2) v2
+            else continue; // Here, `continue` has type `&amp;vector&lt;address&gt;`
+        Vector::push_back(&amp;mut result, *Vector::borrow(chosen_vector, index))
+    };
+
+    result
+}
+</code></pre>
+<a class="header" href="loops.html#the-loop-expression" id="the-loop-expression"><h2>The <code>loop</code> expression</h2></a>
+<p>The <code>loop</code> expression repeats the loop body (an expression with type <code>()</code>) until it hits a <code>break</code></p>
+<p>Without a <code>break</code>, the loop will continue forever</p>
+<pre><code class="language-move=">fun foo() {
+    let i = 0;
+    loop { i = i + 1 }
+}
+</code></pre>
+<p>Here is an example that uses <code>loop</code> to write the <code>sum</code> function:</p>
+<pre><code class="language-move=">fun sum(n: u64): u64 {
+    let sum = 0;
+    let i = 0;
+    loop {
+        i = i + 1;
+        if (i &gt; n) break;
+        sum = sum + i
+    };
+
+    sum
+}
+</code></pre>
+<p>As you might expect, <code>continue</code> can also be used inside a <code>loop</code>. Here is <code>sum_intermediate</code> from above rewritten using <code>loop</code> instead of <code>while</code></p>
+<pre><code class="language-move=">fun sum_intermediate(n: u64): u64 {
+    let sum = 0;
+    let i = 0;
+    loop {
+        if (i % 10 == 0) continue;
+        i = i + 1;
+        if (i &gt; n) break;
+        sum = sum + i
+    };
+
+    sum
+}
+</code></pre>
+<a class="header" href="loops.html#the-type-of-while-and-loop" id="the-type-of-while-and-loop"><h2>The type of <code>while</code> and <code>loop</code></h2></a>
+<p>Move loops are typed expressions. A <code>while</code> expression always has type <code>()</code>.</p>
+<pre><code class="language-move">let () = while (i &lt; 10) { i = i + 1 };
+</code></pre>
+<p>If a <code>loop</code> contains a <code>break</code>, the expression has type unit <code>()</code></p>
+<pre><code class="language-move">(loop { if (i &lt; 10) i = i + 1 else break }: ());
+let () = loop { if (i &lt; 10) i = i + 1 else break };
+</code></pre>
+<p>If <code>loop</code> does not have a <code>break</code>, <code>loop</code> can have any type much like <code>return</code>, <code>abort</code>, <code>break</code>, and <code>continue</code>.</p>
+<pre><code class="language-move">(loop (): u64);
+(loop (): address);
+(loop (): &amp;vector&lt;vector&lt;u8&gt;&gt;);
+</code></pre>
+
+                </div>
+
+                <!-- Mobile navigation buttons -->
+                
+                    <a rel="prev" href="conditionals.html" class="mobile-nav-chapters previous" title="Previous chapter">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a rel="next" href="functions.html" class="mobile-nav-chapters next" title="Next chapter">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+
+            </div>
+
+            
+                <a href="conditionals.html" class="nav-chapters previous" title="You can navigate through the chapters using the arrow keys">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+            
+
+            
+                <a href="functions.html" class="nav-chapters next" title="You can navigate through the chapters using the arrow keys">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+            
+
+        </div>
+
+
+        <!-- Local fallback for Font Awesome -->
+        <script>
+            if ($(".fa").css("font-family") !== "FontAwesome") {
+                $('<link rel="stylesheet" type="text/css" href="_FontAwesome/css/font-awesome.css">').prependTo('head');
+            }
+        </script>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        
+
+        
+
+        
+
+        
+
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS script -->
+        
+
+    </body>
+</html>
