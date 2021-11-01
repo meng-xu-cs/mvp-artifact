@@ -8,13 +8,16 @@ MVP=${WORKSPACE}/mvp-v2
 # diem framework code 
 DIEM=${WORKSPACE}/data/diem-v2
 
+# measurement
+HYPERFINE=${WORKSPACE}/dep/hyperfine
+
 function verify() {
   num_inv="$(grep -E '( invariant )|( invariant<.*> )' $1 | wc -l)"
   num_vc="$(grep -E '( aborts_if )|( ensures )|( requires )' $1 | wc -l)"
   echo "Number of invariants: ${num_inv}"
   echo "Number of verification conditions: ${num_vc}"
 
-  ${MVP} $1 -d ${DIEM} --cores 1
+  ${HYPERFINE} --warmup 2 --min-runs 15 "${MVP} $1 -d ${DIEM} --cores 1"
 }
 
 if [ "$#" -eq 0 ]
