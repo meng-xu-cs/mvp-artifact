@@ -5,6 +5,11 @@ WORKSPACE="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 # mvp 
 MVP=${WORKSPACE}/mvp-v2
 
+# deps
+PATH_DOTNET=${WORKSPACE}/dep/dotnet
+PATH_BOOGIE=${PATH_DOTNET}/tools/boogie
+PATH_Z3=${WORKSPACE}/dep/z3
+
 # diem framework code 
 DIEM=${WORKSPACE}/data/diem-v2
 
@@ -12,23 +17,59 @@ DIEM=${WORKSPACE}/data/diem-v2
 HYPERFINE=${WORKSPACE}/dep/hyperfine
 
 function verify() {
+  ${MVP} $1 -d ${DIEM}
+}
+
+function verify_with_details() {
+  # print stats about the Move code
   num_inv="$(grep -E '( invariant )|( invariant<.*> )' $1 | wc -l)"
   num_vc="$(grep -E '( aborts_if )|( ensures )|( requires )' $1 | wc -l)"
   echo "Number of invariants: ${num_inv}"
   echo "Number of verification conditions: ${num_vc}"
 
-  ${HYPERFINE} --warmup 2 --min-runs 15 "${MVP} $1 -d ${DIEM} --cores 1"
+  # generate the boogie file
+  module_name=$(${MVP} $1 -d ${DIEM} --generate-only --keep | grep -P -o "translating module \K\w+")
+
+  # build the command for verification
+  boogie_cmdl="${PATH_BOOGIE} \
+    -doModSetAnalysis \
+    -printVerifiedProceduresCount:0 \
+    -printModel:1 \
+    -enhancedErrorMessages:1 \
+    -errorLimit:1 \
+    -monomorphize \
+    -proverOpt:PROVER_PATH=${PATH_Z3} \
+    -proverOpt:O:smt.QI.EAGER_THRESHOLD=100 \
+    -proverOpt:O:smt.QI.LAZY_THRESHOLD=100 \
+    -proverOpt:O:parallel.enable=false \
+    -vcsCores:1 \
+    -proc:'\$1_${module_name}_*\$verify' \
+    -noProc:'\$1_${module_name}_*\$1_*\$verify' \
+    output.bpl"
+
+  # measure the time required for verification
+  echo "Verification will run multiple times for a stable performance measurement"
+  echo ""
+
+  DOTNET_ROOT=${PATH_DOTNET} ${HYPERFINE} --show-output --warmup 1 --runs 10 "${boogie_cmdl}"
+
+  # clean-up
+  rm output.bpl
 }
 
-if [ "$#" -eq 0 ]
-then
-  for entry in "${DIEM}"/*
-  do
+if [ "$#" -eq 0 ]; then
+  for entry in "${DIEM}"/*; do
     verify $entry
   done
 else
-  for entry in "$@"
-  do
-    verify $entry
-  done    
+  if [ "$1" == "perf" ]; then
+    shift
+    for entry in "$@"; do
+      verify_with_details $entry
+    done
+  else
+    for entry in "$@"; do
+      verify $entry
+    done
+  fi
 fi
