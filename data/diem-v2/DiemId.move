@@ -174,7 +174,6 @@ module DiemFramework::DiemId {
     spec add_diem_id_domain {
         include AddDiemIdDomainAbortsIf;
         include AddDiemIdDomainEnsures;
-        include AddDiemIdDomainEmits;
     }
     spec schema AddDiemIdDomainAbortsIf {
         tc_account: signer;
@@ -192,17 +191,6 @@ module DiemFramework::DiemId {
         domain: vector<u8>;
         let post domains = global<DiemIdDomains>(address).domains;
         ensures contains(domains, DiemIdDomain { domain });
-    }
-    spec schema AddDiemIdDomainEmits {
-        address: address;
-        domain: vector<u8>;
-        let handle = global<DiemIdDomainManager>(@TreasuryCompliance).diem_id_domain_events;
-        let msg = DiemIdDomainEvent {
-            removed: false,
-            domain: DiemIdDomain { domain },
-            address,
-        };
-        emits msg to handle;
     }
 
     /// Remove a DiemIdDomain from a parent VASP's DiemIdDomains resource.
@@ -240,7 +228,6 @@ module DiemFramework::DiemId {
     spec remove_diem_id_domain {
         include RemoveDiemIdDomainAbortsIf;
         include RemoveDiemIdDomainEnsures;
-        include RemoveDiemIdDomainEmits;
     }
     spec schema RemoveDiemIdDomainAbortsIf {
         tc_account: signer;
@@ -258,18 +245,6 @@ module DiemFramework::DiemId {
         domain: vector<u8>;
         let post domains = global<DiemIdDomains>(address).domains;
         ensures !contains(domains, DiemIdDomain { domain });
-    }
-    spec schema RemoveDiemIdDomainEmits {
-        tc_account: signer;
-        address: address;
-        domain: vector<u8>;
-        let handle = global<DiemIdDomainManager>(@TreasuryCompliance).diem_id_domain_events;
-        let msg = DiemIdDomainEvent {
-            removed: true,
-            domain: DiemIdDomain { domain },
-            address,
-        };
-        emits msg to handle;
     }
 
     public fun has_diem_id_domain(addr: address, domain: vector<u8>): bool acquires DiemIdDomains {

@@ -176,7 +176,6 @@ module DiemFramework::VASPDomain {
     spec add_vasp_domain {
         include AddVASPDomainAbortsIf;
         include AddVASPDomainEnsures;
-        include AddVASPDomainEmits;
     }
     spec schema AddVASPDomainAbortsIf {
         tc_account: signer;
@@ -194,17 +193,6 @@ module DiemFramework::VASPDomain {
         domain: vector<u8>;
         let post domains = global<VASPDomains>(address).domains;
         ensures contains(domains, VASPDomain { domain });
-    }
-    spec schema AddVASPDomainEmits {
-        address: address;
-        domain: vector<u8>;
-        let handle = global<VASPDomainManager>(@TreasuryCompliance).vasp_domain_events;
-        let msg = VASPDomainEvent {
-            removed: false,
-            domain: VASPDomain { domain },
-            address,
-        };
-        emits msg to handle;
     }
 
     /// Remove a VASPDomain from a parent VASP's VASPDomains resource.
@@ -242,7 +230,6 @@ module DiemFramework::VASPDomain {
     spec remove_vasp_domain {
         include RemoveVASPDomainAbortsIf;
         include RemoveVASPDomainEnsures;
-        include RemoveVASPDomainEmits;
     }
     spec schema RemoveVASPDomainAbortsIf {
         tc_account: signer;
@@ -260,18 +247,6 @@ module DiemFramework::VASPDomain {
         domain: vector<u8>;
         let post domains = global<VASPDomains>(address).domains;
         ensures !contains(domains, VASPDomain { domain });
-    }
-    spec schema RemoveVASPDomainEmits {
-        tc_account: signer;
-        address: address;
-        domain: vector<u8>;
-        let handle = global<VASPDomainManager>(@TreasuryCompliance).vasp_domain_events;
-        let msg = VASPDomainEvent {
-            removed: true,
-            domain: VASPDomain { domain },
-            address,
-        };
-        emits msg to handle;
     }
 
     public fun has_vasp_domain(addr: address, domain: vector<u8>): bool acquires VASPDomains {

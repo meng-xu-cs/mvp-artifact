@@ -142,7 +142,6 @@ module DiemFramework::NetworkIdentity {
             new_members: global<NetworkIdentity>(account_addr).identities,
         };
         modifies global<NetworkIdentity>(account_addr);
-        emits msg to handle if has_change;
     }
 
     /// Remove `NetworkIdentity`, skipping if it doesn't exist
@@ -198,7 +197,6 @@ module DiemFramework::NetworkIdentity {
             new_members: global<NetworkIdentity>(account_addr).identities,
         };
         modifies global<NetworkIdentity>(account_addr);
-        emits msg to handle if has_change;
     }
 
     // =================================================================

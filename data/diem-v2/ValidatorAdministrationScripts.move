@@ -68,7 +68,6 @@ module ValidatorAdministrationScripts {
         use DiemFramework::DiemAccount;
         use Std::Errors;
         use DiemFramework::Roles;
-        use DiemFramework::DiemConfig;
 
         include DiemAccount::TransactionChecks{sender: dr_account}; // properties checked by the prologue.
         include SlidingNonce::RecordNonceAbortsIf{seq_nonce: sliding_nonce, account: dr_account};
@@ -92,8 +91,6 @@ module ValidatorAdministrationScripts {
             Errors::INVALID_STATE,
             Errors::LIMIT_EXCEEDED,
             Errors::REQUIRES_ROLE;
-
-        include DiemConfig::ReconfigureEmits;
 
         /// **Access Control:**
         /// Only the Diem Root account can add Validators [[H14]][PERMISSION].
@@ -236,7 +233,6 @@ module ValidatorAdministrationScripts {
         use DiemFramework::DiemAccount;
         use Std::Errors;
         use DiemFramework::Roles;
-        use DiemFramework::DiemConfig;
 
         include DiemAccount::TransactionChecks{sender: dr_account}; // properties checked by the prologue.
         include SlidingNonce::RecordNonceAbortsIf{seq_nonce: sliding_nonce, account: dr_account};
@@ -259,8 +255,6 @@ module ValidatorAdministrationScripts {
             Errors::REQUIRES_ADDRESS,
             Errors::INVALID_STATE,
             Errors::REQUIRES_ROLE;
-
-        include DiemConfig::ReconfigureEmits;
 
         /// **Access Control:**
         /// Only the Diem Root account can remove Validators [[H14]][PERMISSION].
@@ -376,8 +370,6 @@ module ValidatorAdministrationScripts {
             Errors::REQUIRES_ROLE,
             Errors::INVALID_ARGUMENT,
             Errors::INVALID_STATE;
-
-        include is_validator_info_updated ==> DiemConfig::ReconfigureEmits;
 
         /// **Access Control:**
         /// Only the Validator Operator account which has been registered with the validator can

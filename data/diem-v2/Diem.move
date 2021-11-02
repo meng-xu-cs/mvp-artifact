@@ -337,7 +337,6 @@ module DiemFramework::Diem {
     spec burn {
         include BurnAbortsIf<CoinType>;
         include BurnEnsures<CoinType>;
-        include BurnWithResourceCapEmits<CoinType>{preburn: spec_make_preburn(amount)};
     }
     spec schema BurnAbortsIf<CoinType> {
         account: signer;
@@ -384,7 +383,6 @@ module DiemFramework::Diem {
         modifies global<CurrencyInfo<CoinType>>(@CurrencyInfo);
         include CancelBurnAbortsIf<CoinType>;
         include CancelBurnWithCapEnsures<CoinType>;
-        include CancelBurnWithCapEmits<CoinType>;
         ensures exists<CurrencyInfo<CoinType>>(@CurrencyInfo);
         ensures exists<PreburnQueue<CoinType>>(preburn_address);
         ensures post_currency_info == update_field(
@@ -442,7 +440,6 @@ module DiemFramework::Diem {
         ensures exists<CurrencyInfo<CoinType>>(@CurrencyInfo);
         include MintAbortsIf<CoinType>;
         include MintEnsures<CoinType>;
-        include MintEmits<CoinType>;
     }
     spec schema MintAbortsIf<CoinType> {
         value: u64;
@@ -458,16 +455,6 @@ module DiemFramework::Diem {
         ensures exists<CurrencyInfo<CoinType>>(@CurrencyInfo);
         ensures post_currency_info == update_field(currency_info, total_value, currency_info.total_value + value);
         ensures result.value == value;
-    }
-    spec schema MintEmits<CoinType> {
-        value: u64;
-        let currency_info = global<CurrencyInfo<CoinType>>(@CurrencyInfo);
-        let handle = currency_info.mint_events;
-        let msg = MintEvent{
-            amount: value,
-            currency_code: currency_info.currency_code,
-        };
-        emits msg to handle if !currency_info.is_synthetic;
     }
 
     /// Add the `coin` to the `preburn.to_burn` field in the `Preburn` resource
@@ -511,7 +498,6 @@ module DiemFramework::Diem {
         ensures exists<CurrencyInfo<CoinType>>(@CurrencyInfo);
         include PreburnWithResourceAbortsIf<CoinType>{amount: coin.value};
         include PreburnEnsures<CoinType>{amount: coin.value};
-        include PreburnWithResourceEmits<CoinType>{amount: coin.value};
     }
     spec schema PreburnWithResourceAbortsIf<CoinType> {
         amount: u64;
@@ -530,19 +516,6 @@ module DiemFramework::Diem {
         let info = spec_currency_info<CoinType>();
         let post post_info = spec_currency_info<CoinType>();
         ensures post_info == update_field(info, preburn_value, info.preburn_value + amount);
-    }
-    spec schema PreburnWithResourceEmits<CoinType> {
-        amount: u64;
-        preburn_address: address;
-        let info = spec_currency_info<CoinType>();
-        let currency_code = spec_currency_code<CoinType>();
-        let handle = info.preburn_events;
-        let msg = PreburnEvent {
-            amount,
-            currency_code,
-            preburn_address,
-        };
-        emits msg to handle if !info.is_synthetic;
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -787,7 +760,6 @@ module DiemFramework::Diem {
         include PreburnToAbortsIf<CoinType>{amount: coin.value};
         include PreburnToEnsures<CoinType>{amount: coin.value};
         let account_addr = Signer::address_of(account);
-        include PreburnWithResourceEmits<CoinType>{amount: coin.value, preburn_address: account_addr};
     }
     spec schema PreburnToAbortsIf<CoinType> {
         account: signer;
@@ -902,7 +874,6 @@ module DiemFramework::Diem {
     }
     spec burn_with_capability {
         pragma delegate_invariants_to_caller;
-        include BurnWithResourceCapEmits<CoinType>{preburn: spec_make_preburn(amount)};
         include BurnWithCapabilityAbortsIf<CoinType>;
         include BurnWithCapabilityEnsures<CoinType>;
     }
@@ -961,7 +932,6 @@ module DiemFramework::Diem {
         let pre_preburn = preburn;
         include BurnWithResourceCapAbortsIf<CoinType>{preburn: pre_preburn};
         include BurnWithResourceCapEnsures<CoinType>{preburn: pre_preburn};
-        include BurnWithResourceCapEmits<CoinType>{preburn: pre_preburn};
     }
     spec schema BurnWithResourceCapAbortsIf<CoinType> {
         preburn: Preburn<CoinType>;
@@ -978,19 +948,6 @@ module DiemFramework::Diem {
                 == old(spec_currency_info<CoinType>().total_value) - preburn.to_burn.value;
         ensures spec_currency_info<CoinType>().preburn_value
                 == old(spec_currency_info<CoinType>().preburn_value) - preburn.to_burn.value;
-    }
-    spec schema BurnWithResourceCapEmits<CoinType> {
-        preburn: Preburn<CoinType>;
-        preburn_address: address;
-        let info = spec_currency_info<CoinType>();
-        let currency_code = spec_currency_code<CoinType>();
-        let handle = info.burn_events;
-        emits BurnEvent {
-                amount: preburn.to_burn.value,
-                currency_code,
-                preburn_address,
-            }
-            to handle if !info.is_synthetic;
     }
 
     /// Cancels the oldest preburn request held in the `PreburnQueue` resource under
@@ -1033,7 +990,6 @@ module DiemFramework::Diem {
         modifies global<CurrencyInfo<CoinType>>(@CurrencyInfo);
         include CancelBurnWithCapAbortsIf<CoinType>;
         include CancelBurnWithCapEnsures<CoinType>;
-        include CancelBurnWithCapEmits<CoinType>;
         ensures exists<CurrencyInfo<CoinType>>(@CurrencyInfo);
         ensures result.value == amount;
         ensures result.value > 0;
@@ -1054,19 +1010,6 @@ module DiemFramework::Diem {
         let post post_info = global<CurrencyInfo<CoinType>>(@CurrencyInfo);
         ensures post_info == update_field(info, preburn_value, info.preburn_value - amount);
     }
-    spec schema CancelBurnWithCapEmits<CoinType> {
-        preburn_address: address;
-        amount: u64;
-        let info = spec_currency_info<CoinType>();
-        let currency_code = spec_currency_code<CoinType>();
-        let handle = info.cancel_burn_events;
-        emits CancelBurnEvent {
-               amount,
-               currency_code,
-               preburn_address,
-           }
-           to handle if !info.is_synthetic;
-    }
 
     /// A shortcut for immediately burning a coin. This calls preburn followed by a subsequent burn, and is
     /// used for administrative burns, like unpacking an XDX coin or charging fees.
@@ -1085,8 +1028,6 @@ module DiemFramework::Diem {
         include BurnNowAbortsIf<CoinType>;
         let info = spec_currency_info<CoinType>();
         let post post_info = spec_currency_info<CoinType>();
-        include PreburnWithResourceEmits<CoinType>{amount: coin.value, preburn_address: preburn_address};
-        include BurnWithResourceCapEmits<CoinType>{preburn: Preburn<CoinType>{to_burn: coin}};
         ensures preburn.to_burn.value == 0;
         ensures post_info == update_field(info, total_value, info.total_value - coin.value);
     }
@@ -1487,7 +1428,6 @@ module DiemFramework::Diem {
     spec update_xdx_exchange_rate {
         include UpdateXDXExchangeRateAbortsIf<FromCoinType>;
         include UpdateXDXExchangeRateEnsures<FromCoinType>;
-        include UpdateXDXExchangeRateEmits<FromCoinType>;
     }
 
     spec schema UpdateXDXExchangeRateAbortsIf<FromCoinType> {
@@ -1500,16 +1440,6 @@ module DiemFramework::Diem {
     spec schema UpdateXDXExchangeRateEnsures<FromCoinType> {
         xdx_exchange_rate: FixedPoint32;
         ensures spec_currency_info<FromCoinType>().to_xdx_exchange_rate == xdx_exchange_rate;
-    }
-
-    spec schema UpdateXDXExchangeRateEmits<FromCoinType> {
-        xdx_exchange_rate: FixedPoint32;
-        let handle = global<CurrencyInfo<FromCoinType>>(@CurrencyInfo).exchange_rate_update_events;
-        let msg = ToXDXExchangeRateUpdateEvent {
-            currency_code: global<CurrencyInfo<FromCoinType>>(@CurrencyInfo).currency_code,
-            new_to_xdx_exchange_rate: FixedPoint32::get_raw_value(xdx_exchange_rate)
-        };
-        emits msg to handle;
     }
 
     /// Returns the (rough) exchange rate between `CoinType` and `XDX`

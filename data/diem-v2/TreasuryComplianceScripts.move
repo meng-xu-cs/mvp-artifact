@@ -93,14 +93,6 @@ module DiemFramework::TreasuryComplianceScripts {
         /// The balance of `Token` at `preburn_address` should increase by the preburned amount.
         ensures post_balance_at_addr == balance_at_addr + amount;
 
-        include Diem::CancelBurnWithCapEmits<Token>;
-        include DiemAccount::DepositEmits<Token>{
-            payer: preburn_address,
-            payee: preburn_address,
-            amount: amount,
-            metadata: x""
-        };
-
         aborts_with [check]
             Errors::REQUIRES_CAPABILITY,
             Errors::NOT_PUBLISHED,
@@ -187,8 +179,6 @@ module DiemFramework::TreasuryComplianceScripts {
             Errors::INVALID_STATE,
             Errors::LIMIT_EXCEEDED;
 
-        include Diem::BurnWithResourceCapEmits<Token>{preburn: Diem::spec_make_preburn(amount)};
-
         /// **Access Control:**
         /// Only the account with the burn capability can burn coins [[H3]][PERMISSION].
         include Diem::AbortsIfNoBurnCapability<Token>{account: account};
@@ -255,8 +245,6 @@ module DiemFramework::TreasuryComplianceScripts {
         include DiemAccount::ExtractWithdrawCapAbortsIf{sender_addr: account_addr};
         include DiemAccount::PreburnAbortsIf<Token>{dd: account, cap: cap};
         include DiemAccount::PreburnEnsures<Token>{dd: account, payer: account_addr};
-
-        include DiemAccount::PreburnEmits<Token>{dd: account, cap: cap};
 
         aborts_with [check]
             Errors::NOT_PUBLISHED,
@@ -392,8 +380,6 @@ module DiemFramework::TreasuryComplianceScripts {
             Errors::INVALID_STATE,
             Errors::LIMIT_EXCEEDED,
             Errors::REQUIRES_ROLE;
-
-        include DiemAccount::TieredMintEmits<CoinType>;
 
         /// **Access Control:**
         /// Only the Treasury Compliance account can mint [[H1]][PERMISSION].
@@ -592,7 +578,6 @@ module DiemFramework::TreasuryComplianceScripts {
         );
         include Diem::UpdateXDXExchangeRateAbortsIf<Currency>;
         include Diem::UpdateXDXExchangeRateEnsures<Currency>{xdx_exchange_rate: rate};
-        include Diem::UpdateXDXExchangeRateEmits<Currency>{xdx_exchange_rate: rate};
 
         aborts_with [check]
             Errors::INVALID_ARGUMENT,
@@ -677,7 +662,6 @@ module DiemFramework::TreasuryComplianceScripts {
         include DiemAccount::TransactionChecks{sender: tc_account}; // properties checked by the prologue.
         include VASPDomain::AddVASPDomainAbortsIf;
         include VASPDomain::AddVASPDomainEnsures;
-        include VASPDomain::AddVASPDomainEmits;
         aborts_with [check]
             Errors::REQUIRES_ROLE,
             Errors::REQUIRES_ADDRESS,

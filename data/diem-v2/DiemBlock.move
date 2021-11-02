@@ -97,21 +97,6 @@ module DiemFramework::DiemBlock {
         ensures get_current_block_height() == old(get_current_block_height()) + 1;
 
         aborts_if get_current_block_height() + 1 > MAX_U64 with EXECUTION_FAILURE;
-        include BlockPrologueEmits;
-    }
-    spec schema BlockPrologueEmits {
-        round: u64;
-        timestamp: u64;
-        previous_block_votes: vector<address>;
-        proposer: address;
-        let handle = global<BlockMetadata>(@DiemRoot).new_block_events;
-        let msg = NewBlockEvent {
-            round,
-            proposer,
-            previous_block_votes,
-            time_microseconds: timestamp,
-        };
-        emits msg to handle;
     }
 
     /// Get the current block height

@@ -158,7 +158,6 @@ module DiemFramework::DiemSystem {
         /// `payload` is the only field of DiemConfig, so next completely specifies it.
         ensures global<DiemConfig::DiemConfig<DiemSystem>>(@DiemRoot).payload == value;
         include DiemConfig::SetEnsures<DiemSystem>{payload: value};
-        include DiemConfig::ReconfigureEmits;
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -208,7 +207,6 @@ module DiemFramework::DiemSystem {
         modifies global<DiemConfig::DiemConfig<DiemSystem>>(@DiemRoot);
         include AddValidatorAbortsIf;
         include AddValidatorEnsures;
-        include DiemConfig::ReconfigureEmits;
     }
     spec schema AddValidatorAbortsIf {
         dr_account: signer;
@@ -264,7 +262,6 @@ module DiemFramework::DiemSystem {
         modifies global<DiemConfig::DiemConfig<DiemSystem>>(@DiemRoot);
         include RemoveValidatorAbortsIf;
         include RemoveValidatorEnsures;
-        include DiemConfig::ReconfigureEmits;
     }
     spec schema RemoveValidatorAbortsIf {
         dr_account: signer;
@@ -343,7 +340,6 @@ module DiemFramework::DiemSystem {
             with Errors::LIMIT_EXCEEDED;
         aborts_if is_validator_info_updated && DiemTimestamp::spec_now_microseconds() <= last_config_time + FIVE_MINUTES
                 with Errors::LIMIT_EXCEEDED;
-        include UpdateConfigAndReconfigureEmits;
     }
     spec schema UpdateConfigAndReconfigureAbortsIf {
         validator_addr: address;
@@ -375,15 +371,6 @@ module DiemFramework::DiemSystem {
                      post_vs[i].config == ValidatorConfig::get_config(validator_addr));
         /// DIP-6 property
         ensures Roles::spec_has_validator_role_addr(validator_addr);
-    }
-    spec schema UpdateConfigAndReconfigureEmits {
-        validator_addr: address;
-        let is_validator_info_updated =
-            ValidatorConfig::is_valid(validator_addr) &&
-            (exists v_info in spec_get_validators():
-                v_info.addr == validator_addr
-                && v_info.config != ValidatorConfig::spec_get_config(validator_addr));
-        include is_validator_info_updated ==> DiemConfig::ReconfigureEmits;
     }
 
     ///////////////////////////////////////////////////////////////////////////

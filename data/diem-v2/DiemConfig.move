@@ -175,7 +175,6 @@ module DiemFramework::DiemConfig {
         include ReconfigureAbortsIf;
         modifies global<DiemConfig<Config>>(@DiemRoot);
         include SetEnsures<Config>;
-        include ReconfigureEmits;
     }
 
     /// Private function to temporarily halt reconfiguration.
@@ -283,7 +282,6 @@ module DiemFramework::DiemConfig {
         ensures old(spec_has_config()) == spec_has_config();
         include Roles::AbortsIfNotDiemRoot{account: dr_account};
         include ReconfigureAbortsIf;
-        include ReconfigureEmits;
     }
 
     /// Private function to do reconfiguration.  Updates reconfiguration status resource
@@ -349,7 +347,6 @@ module DiemFramework::DiemConfig {
                 update_field(config,
                     epoch, config.epoch + 1),
                     last_reconfiguration_time, post_now);
-        include ReconfigureEmits;
     }
     /// The following schema describes aborts conditions which we do not want to be propagated to the verification
     /// of callers, and which are therefore marked as `concrete` to be only verified against the implementation.
@@ -372,16 +369,6 @@ module DiemFramework::DiemConfig {
             && current_time < config.last_reconfiguration_time
                 with Errors::INVALID_STATE;
     }
-    spec schema ReconfigureEmits {
-        let config = global<Configuration>(@DiemRoot);
-        let post post_config = global<Configuration>(@DiemRoot);
-        let post now = DiemTimestamp::spec_now_microseconds();
-        let post msg = NewEpochEvent {
-            epoch: post_config.epoch,
-        };
-        let handle = config.events;
-        emits msg to handle if (!spec_reconfigure_omitted() && now != config.last_reconfiguration_time);
-    }
 
     /// Emit a `NewEpochEvent` event. This function will be invoked by genesis directly to generate the very first
     /// reconfiguration event.
@@ -397,14 +384,6 @@ module DiemFramework::DiemConfig {
                 epoch: config_ref.epoch,
             },
         );
-    }
-    spec emit_genesis_reconfiguration_event {
-        let post config = global<Configuration>(@DiemRoot);
-        let post handle = config.events;
-        let post msg = NewEpochEvent {
-                epoch: config.epoch,
-        };
-        emits msg to handle;
     }
 
     // =================================================================

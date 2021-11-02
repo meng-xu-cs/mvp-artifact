@@ -106,17 +106,6 @@ module DiemFramework::AccountFreezing {
         aborts_if frozen_address == @TreasuryCompliance with Errors::INVALID_ARGUMENT;
         aborts_if !exists<FreezingBit>(frozen_address) with Errors::NOT_PUBLISHED;
         ensures spec_account_is_frozen(frozen_address);
-        include FreezeAccountEmits;
-    }
-    spec schema FreezeAccountEmits {
-        account: &signer;
-        frozen_address: address;
-        let handle = global<FreezeEventsHolder>(@DiemRoot).freeze_event_handle;
-        let msg = FreezeAccountEvent {
-            initiator_address: Signer::address_of(account),
-            frozen_address
-        };
-        emits msg to handle;
     }
 
     /// Unfreeze the account at `addr`.
@@ -143,17 +132,6 @@ module DiemFramework::AccountFreezing {
         include Roles::AbortsIfNotTreasuryCompliance;
         aborts_if !exists<FreezingBit>(unfrozen_address) with Errors::NOT_PUBLISHED;
         ensures !spec_account_is_frozen(unfrozen_address);
-        include UnfreezeAccountEmits;
-    }
-    spec schema UnfreezeAccountEmits {
-        account: &signer;
-        unfrozen_address: address;
-        let handle = global<FreezeEventsHolder>(@DiemRoot).unfreeze_event_handle;
-        let msg = UnfreezeAccountEvent {
-            initiator_address: Signer::address_of(account),
-            unfrozen_address
-        };
-        emits msg to handle;
     }
 
     /// Returns if the account at `addr` is frozen.

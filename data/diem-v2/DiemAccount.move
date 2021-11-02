@@ -350,7 +350,6 @@ module DiemFramework::DiemAccount {
         include DepositAbortsIf<Token>{amount: amount};
         include DepositOverflowAbortsIf<Token>{amount: amount};
         include DepositEnsures<Token>{amount: amount};
-        include DepositEmits<Token>{amount: amount};
         include dual_attestation ==> DualAttestation::AssertPaymentOkAbortsIf<Token>{value: amount};
     }
     spec schema DepositAbortsIf<Token> {
@@ -405,20 +404,6 @@ module DiemFramework::DiemAccount {
         ensures Event::spec_guid_eq(global<DiemAccount>(payee).received_events,
                                     old(global<DiemAccount>(payee).received_events));
     }
-    spec schema DepositEmits<Token> {
-        payer: address;
-        payee: address;
-        amount: u64;
-        metadata: vector<u8>;
-        let handle = global<DiemAccount>(payee).received_events;
-        let msg = ReceivedPaymentEvent {
-            amount,
-            currency_code: Diem::spec_currency_code<Token>(),
-            payer,
-            metadata
-        };
-        emits msg to handle;
-    }
 
     /// Mint 'mint_amount' to 'designated_dealer_address' for 'tier_index' tier.
     /// Max valid tier index is 3 since there are max 4 tiers per DD.
@@ -448,7 +433,6 @@ module DiemFramework::DiemAccount {
         modifies global<Diem::CurrencyInfo<Token>>(@CurrencyInfo);
         include TieredMintAbortsIf<Token>;
         include TieredMintEnsures<Token>;
-        include TieredMintEmits<Token>;
     }
     spec schema TieredMintAbortsIf<Token> {
         tc_account: signer;
@@ -472,19 +456,6 @@ module DiemFramework::DiemAccount {
         /// The balance of designated dealer increases by `amount`.
         ensures post_dealer_balance == dealer_balance + mint_amount;
     }
-    spec schema TieredMintEmits<Token> {
-        tc_account: signer;
-        designated_dealer_address: address;
-        mint_amount: u64;
-        tier_index: u64;
-        include DepositEmits<Token>{
-            payer: @VMReserved,
-            payee: designated_dealer_address,
-            amount: mint_amount,
-            metadata: x""
-        };
-        include DesignatedDealer::TieredMintEmits<Token>{dd_addr: designated_dealer_address, amount: mint_amount};
-    }
 
     // Cancel the burn request from `preburn_address` and return the funds.
     // Fails if the sender does not have a published MintCapability.
@@ -500,15 +471,8 @@ module DiemFramework::DiemAccount {
     }
     spec cancel_burn {
         include CancelBurnAbortsIf<Token>;
-        include Diem::CancelBurnWithCapEmits<Token>;
         include Diem::CancelBurnWithCapEnsures<Token>;
         include DepositEnsures<Token>{payee: preburn_address};
-        include DepositEmits<Token>{
-            payer: preburn_address,
-            payee: preburn_address,
-            amount: amount,
-            metadata: x""
-        };
     }
     spec schema CancelBurnAbortsIf<Token> {
         account: signer;
@@ -628,7 +592,6 @@ module DiemFramework::DiemAccount {
         include WithdrawFromAbortsIf<Token>;
         include WithdrawFromBalanceEnsures<Token>{balance: global<Balance<Token>>(payer)};
         include WithdrawOnlyFromCapAddress<Token>;
-        include WithdrawFromEmits<Token>;
     }
     spec schema WithdrawFromAbortsIf<Token> {
         cap: WithdrawCapability;
@@ -647,21 +610,6 @@ module DiemFramework::DiemAccount {
         /// Can only withdraw from the balances of cap.account_address [[H19]][PERMISSION].
         ensures forall addr: address where old(exists<Balance<Token>>(addr)) && addr != cap.account_address:
             balance<Token>(addr) == old(balance<Token>(addr));
-    }
-    spec schema WithdrawFromEmits<Token> {
-        cap: WithdrawCapability;
-        payee: address;
-        amount: u64;
-        metadata: vector<u8>;
-        let payer = cap.account_address;
-        let handle = global<DiemAccount>(payer).sent_events;
-        let msg = SentPaymentEvent {
-            amount,
-            currency_code: Diem::spec_currency_code<Token>(),
-            payee,
-            metadata
-        };
-        emits msg to handle;
     }
 
     /// Withdraw `amount` `Diem<Token>`'s from `cap.address` and send them to the `Preburn`
@@ -694,7 +642,6 @@ module DiemFramework::DiemAccount {
                                     old(global<DiemAccount>(dd_addr).received_events));
         include PreburnAbortsIf<Token>;
         include PreburnEnsures<Token>{dd, payer};
-        include PreburnEmits<Token>;
     }
     spec schema PreburnAbortsIf<Token> {
         dd: signer;
@@ -715,14 +662,6 @@ module DiemFramework::DiemAccount {
         ensures post_payer_balance == payer_balance - amount;
         /// The value of preburn at `dd_addr` increases by `amount`;
         include Diem::PreburnToEnsures<Token>{amount, account: dd};
-    }
-    spec schema PreburnEmits<Token> {
-        dd: signer;
-        cap: WithdrawCapability;
-        amount: u64;
-        let dd_addr = Signer::address_of(dd);
-        include Diem::PreburnWithResourceEmits<Token>{preburn_address: dd_addr};
-        include WithdrawFromEmits<Token>{payee: dd_addr, metadata: x""};
     }
 
     /// Return a unique capability granting permission to withdraw from the sender's account balance.
@@ -871,7 +810,6 @@ module DiemFramework::DiemAccount {
                                     old(global<DiemAccount>(payee).received_events));
         include PayFromAbortsIf<Token>;
         include PayFromEnsures<Token>{payer};
-        include PayFromEmits<Token>;
     }
 
     spec schema PayFromAbortsIf<Token> {
@@ -900,15 +838,6 @@ module DiemFramework::DiemAccount {
         ensures payer == payee ==> balance<Token>(payer) == old(balance<Token>(payer));
         ensures payer != payee ==> balance<Token>(payer) == old(balance<Token>(payer)) - amount;
         ensures payer != payee ==> balance<Token>(payee) == old(balance<Token>(payee)) + amount;
-    }
-    spec schema PayFromEmits<Token> {
-        cap: WithdrawCapability;
-        payee: address;
-        amount: u64;
-        metadata: vector<u8>;
-        let payer = cap.account_address;
-        include DepositEmits<Token>{payer: payer};
-        include WithdrawFromEmits<Token>;
     }
 
     /// Rotate the authentication key for the account under cap.account_address
@@ -1127,7 +1056,6 @@ module DiemFramework::DiemAccount {
         ensures post_account_ops_cap == update_field(account_ops_cap, creation_events, account_ops_cap.creation_events);
         ensures spec_holds_own_key_rotation_cap(new_account_addr);
         ensures spec_holds_own_withdraw_cap(new_account_addr);
-        include MakeAccountEmits{new_account_address: Signer::address_of(new_account)};
     }
     spec schema MakeAccountAbortsIf {
         addr: address;
@@ -1143,15 +1071,6 @@ module DiemFramework::DiemAccount {
         include CreateAuthenticationKeyAbortsIf;
         // We do not need to specify aborts_if if account already exists, because make_account will
         // abort because of a published FreezingBit, first.
-    }
-    spec schema MakeAccountEmits {
-        new_account_address: address;
-        let post handle = global<AccountOperationsCapability>(@DiemRoot).creation_events;
-        let post msg = CreateAccountEvent {
-            created: new_account_address,
-            role_id: Roles::spec_get_role_id(new_account_address)
-        };
-        emits msg to handle;
     }
 
     /// Construct an authentication key, aborting if the prefix is not valid.
@@ -1229,7 +1148,6 @@ module DiemFramework::DiemAccount {
         include CreateDiemRootAccountModifies;
         include CreateDiemRootAccountAbortsIf;
         include CreateDiemRootAccountEnsures;
-        include MakeAccountEmits{new_account_address: @DiemRoot};
     }
 
     spec schema CreateDiemRootAccountModifies {
@@ -1298,7 +1216,6 @@ module DiemFramework::DiemAccount {
         let account_ops_cap = global<AccountOperationsCapability>(@DiemRoot);
         let post post_account_ops_cap = global<AccountOperationsCapability>(@DiemRoot);
         ensures post_account_ops_cap == update_field(account_ops_cap, creation_events, account_ops_cap.creation_events);
-        include MakeAccountEmits{new_account_address: @TreasuryCompliance};
         aborts_if VASPDomain::tc_domain_manager_exists() with Errors::ALREADY_PUBLISHED;
     }
     spec schema CreateTreasuryComplianceAccountModifies {
@@ -1361,7 +1278,6 @@ module DiemFramework::DiemAccount {
         pragma disable_invariants_in_body;
         include CreateDesignatedDealerAbortsIf<CoinType>;
         include CreateDesignatedDealerEnsures<CoinType>;
-        include MakeAccountEmits;
     }
 
     spec schema CreateDesignatedDealerAbortsIf<CoinType> {
@@ -1420,7 +1336,6 @@ module DiemFramework::DiemAccount {
         pragma disable_invariants_in_body;
         include CreateParentVASPAccountAbortsIf<Token>;
         include CreateParentVASPAccountEnsures<Token>;
-        include MakeAccountEmits;
     }
 
     spec schema CreateParentVASPAccountAbortsIf<Token> {
@@ -1476,7 +1391,6 @@ module DiemFramework::DiemAccount {
             child_addr: new_account_address,
         };
         include AddCurrencyForAccountEnsures<Token>{addr: new_account_address};
-        include MakeAccountEmits;
     }
     spec schema CreateChildVASPAccountAbortsIf<Token> {
         parent: signer;
@@ -2178,18 +2092,6 @@ module DiemFramework::DiemAccount {
         epilogue_common<XUS>(dr_account, txn_sequence_number, 0, 0, 0);
         if (should_trigger_reconfiguration) DiemConfig::reconfigure(dr_account)
     }
-    spec writeset_epilogue {
-        include WritesetEpilogueEmits;
-    }
-    spec schema WritesetEpilogueEmits {
-        should_trigger_reconfiguration: bool;
-        let handle = global<DiemWriteSetManager>(@DiemRoot).upgrade_events;
-        let msg = AdminTransactionEvent {
-            committed_timestamp_secs: DiemTimestamp::spec_now_seconds()
-        };
-        emits msg to handle;
-        include should_trigger_reconfiguration ==> DiemConfig::ReconfigureEmits;
-    }
 
     /// Create a Validator account
     public fun create_validator_account(
@@ -2211,7 +2113,6 @@ module DiemFramework::DiemAccount {
         pragma disable_invariants_in_body;
         include CreateValidatorAccountAbortsIf;
         include CreateValidatorAccountEnsures;
-        include MakeAccountEmits;
     }
 
     spec schema CreateValidatorAccountAbortsIf {

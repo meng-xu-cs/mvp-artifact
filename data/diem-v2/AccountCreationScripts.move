@@ -128,18 +128,6 @@ module DiemFramework::AccountCreationScripts {
             Errors::INVALID_STATE,
             Errors::INVALID_ARGUMENT;
 
-        // TODO: fix emit specs below
-        /*
-        include DiemAccount::MakeAccountEmits{new_account_address: child_address};
-        include child_initial_balance > 0 ==>
-            DiemAccount::PayFromEmits<CoinType>{
-                cap: parent_cap,
-                payee: child_address,
-                amount: child_initial_balance,
-                metadata: x"",
-            };
-        */
-
         /// **Access Control:**
         /// Only Parent VASP accounts can create Child VASP accounts [[A7]][ROLE].
         include Roles::AbortsIfNotParentVasp{account: parent_vasp};
@@ -230,8 +218,6 @@ module DiemFramework::AccountCreationScripts {
             Errors::REQUIRES_ADDRESS,
             Errors::ALREADY_PUBLISHED,
             Errors::REQUIRES_ROLE;
-
-        include DiemAccount::MakeAccountEmits;
 
         /// **Access Control:**
         /// Only the Diem Root account can create Validator Operator accounts [[A4]][ROLE].
@@ -327,8 +313,6 @@ module DiemFramework::AccountCreationScripts {
             Errors::ALREADY_PUBLISHED,
             Errors::REQUIRES_ROLE;
 
-        include DiemAccount::MakeAccountEmits;
-
         /// **Access Control:**
         /// Only the Diem Root account can create Validator accounts [[A3]][ROLE].
         include Roles::AbortsIfNotDiemRoot{account: dr_account};
@@ -416,8 +400,6 @@ module DiemFramework::AccountCreationScripts {
             Errors::NOT_PUBLISHED,
             Errors::ALREADY_PUBLISHED,
             Errors::REQUIRES_ROLE;
-
-        include DiemAccount::MakeAccountEmits;
 
         /// **Access Control:**
         /// Only the Treasury Compliance account can create Parent VASP accounts [[A6]][ROLE].
@@ -509,8 +491,6 @@ module DiemFramework::AccountCreationScripts {
             Errors::NOT_PUBLISHED,
             Errors::ALREADY_PUBLISHED,
             Errors::REQUIRES_ROLE;
-
-        include DiemAccount::MakeAccountEmits{new_account_address: addr};
 
         /// **Access Control:**
         /// Only the Treasury Compliance account can create Designated Dealer accounts [[A5]][ROLE].

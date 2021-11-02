@@ -163,7 +163,6 @@ module DiemFramework::DesignatedDealer {
         pragma opaque;
 
         include TieredMintAbortsIf<CoinType>;
-        include TieredMintEmits<CoinType>;
 
         modifies global<Dealer>(dd_addr);
         ensures exists<Dealer>(dd_addr);
@@ -185,18 +184,6 @@ module DiemFramework::DesignatedDealer {
         include AbortsIfNoDealer;
         aborts_if !exists<Diem::MintCapability<CoinType>>(Signer::address_of(tc_account)) with Errors::REQUIRES_CAPABILITY;
         include Diem::MintAbortsIf<CoinType>{value: amount};
-    }
-    spec schema TieredMintEmits<CoinType> {
-        dd_addr: address;
-        amount: u64;
-        let handle = global<Dealer>(dd_addr).mint_event_handle;
-        let msg = ReceivedMintEvent {
-            currency_code: Diem::spec_currency_code<CoinType>(),
-            destination_address: dd_addr,
-            amount,
-        };
-        emits msg to handle;
-        include Diem::MintEmits<CoinType>{value: amount};
     }
 
     public fun exists_at(dd_addr: address): bool {
