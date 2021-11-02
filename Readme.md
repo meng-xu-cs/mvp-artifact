@@ -3,6 +3,31 @@
 - Paper submission number: 99
 - Artifaction submission number: 100
 
+## Evaluation Setup
+
+The evaluation happens on the virtual machine image provided by TACAS 22. The virtual machine is configured to have 1 CPU core and 8 GB memory. The VM is emulated by VMware Workstation 16 Player. The host machine runs on Ubuntu 20.04 LTS with 11th Gen Intel(R) Core(TM) i7-11800H (8 cores) and 64 GB memory. Internet connection is not required for the artifact evaluation.
+
+## TL;DR
+
+For a quick instruction on reproducing the results in the paper:
+
+```shell script
+cd <path-to-where-this-artifact-is-unzipped>
+
+# verification of Diem Framework with current version of MVP
+./verify-diem-v2
+
+# performance comparison between a prior and the current version of MVP 
+./verify-diem-v1 perf data/diem-v1/LibraAccount.move
+./verify-diem-v2 perf data/diem-v2/DiemAccount.move
+
+# case study on a timeout that happens in the prior version of MVP
+./mvp-v1 data/diem-v1/LibraSystem.move -d data/diem-v1/ --timeout 100
+./mvp-v2 data/diem-v2/DiemSystem.move -d data/diem-v2/
+```
+
+The rest of the README contains a more thorough description on the commands above as well as an in-depth introduction to the MVP, which can be read selectively.
+
 ## Directory Layout
 
 ```text
@@ -64,12 +89,75 @@ Unless stated otherwise, the following commands are applicable to the latest ver
 
 ## Evaluations on The Performance of MVP
 
+### Verification of The Whole Diem Framework
 
+The current Diem Framework release can be verified by MVP with the following command:
 
-## Evaluations on Key Components of MVP
+```shell script
+./verify-diem-v2
+```
 
-MVP is a substantial and evolving piece of software that has been tuned and optimized in many ways. As a result, it is not easy to define exactly what implementation decisions lead to fast and reliable performance. However, we can at least
-identify three major ideas that resulted in dramatic improvements in speed and reliability since the description of an early prototype of MVP (a.k.a, `mvp-v1` in this artifact package). Aligned with the paper, the evaluation focuses on the three identified core ideas:
+This will iterate over each of the source code files in the Diem Framework and run modular verification on a per-file basis.
+
+The Diem Framework code can also be verified as a whole package via the following command:
+
+```shell script
+./verify-diem-v2 data/diem-v2/
+```
+
+The verification is expected to finish in about 1 minute, which is slightly faster than verifying all files sequentially. This is because MVP takes a modular verification approach and when verifying a Move file `M`, it will build a cluster of files that are related to `M` and send the whole cluster for verification instead of just the content in `M`. More details on modular verification can be found in the paper.
+
+### Case Study on LibraAccount / DiemAccount
+
+The numbers in Section 4 - Analysis of the paper (page 14) can be reproduced by the following commands:
+
+```shell scrpit
+./verify-diem-v1 perf data/diem-v1/LibraAccount.move
+./verify-diem-v2 perf data/diem-v2/DiemAccount.move
+```
+
+The first command profiles the preformance on the `LibraAccount` from V1 Diem Framework using the V1 version of MVP, while the second command profiles the performance on the `DiemAccount` from V2 Diem Framework.
+
+Using the setup above, the output is
+
+- `LibraAccount` (using MVP V1, the prior version of MVP)
+  ```text
+  Time (mean ± σ):     11.607 s ±  0.267 s    [User: 9.899 s, System: 0.254 s]
+  Range (min … max):   10.870 s … 11.785 s    10 runs
+  ```
+
+- `DiemAccount` (using MVP V2, the current version of MVP)
+  ```text
+  Time (mean ± σ):      8.468 s ±  0.027 s    [User: 7.340 s, System: 0.254 s]
+  Range (min … max):    8.429 s …  8.508 s    10 runs
+  ```
+
+NOTE: the numbers differ slightly from the numbers in the paper due to the fact that the computation happens on a virtual machine instead of natively. But the reduction of verification time and a smaller standard deviation stays the same.
+
+It is also worthnoting that performance evaluation of the `DiemAccount` has cluster verification turned off to make a fair comparison between the two versions of MVP. In particular, in this case, the file cluster is built and all global invariants defined in other modules will be incorporated in the verification of `DiemAccount`. But only code written in `DiemAccount` will be sent for verification while code in other modules are filtered out. This is on par with what happens in MVP V1 and makes the comparison fair.
+
+To see the performance of `DiemAccount` without the filtering in MVP V2, simply run, and notice the increase of total verification time.
+```shell script
+./verify-diem-v2 data/diem-v2/DiemAccount.move
+```
+
+### Case Study on Timeouts And Butterfly Effects
+
+The `LibraSystem::update_config_and_reconfigure` from the V1 version of Diem Framework takes extremely long time to verify in MVP V1 (if it can be verified). Most of the time the verificatio fails with timeout, which can be experienced with the command below:
+
+```shell script
+./mvp-v1 data/diem-v1/LibraSystem.move -d data/diem-v1/ --timeout 100
+```
+
+With all the improvements in the V2 version of MVP, the timeout has gone and the whole module can be verified within a few seconds, as can be demonstrated with the following command:
+
+```shell script
+./mvp-v2 data/diem-v2/DiemSystem.move -d data/diem-v2/
+```
+
+## Demonstrations of Key Components in MVP
+
+MVP is a substantial and evolving piece of software that has been tuned and optimized in many ways. As a result, it is not easy to define exactly what implementation decisions lead to fast and reliable performance. However, we can at least identify three major ideas that resulted in dramatic improvements in speed and reliability since the description of an early prototype of MVP (a.k.a, `mvp-v1` in this artifact package). Aligned with the paper, the evaluation focuses on the three identified core ideas:
 
 ### Reference Elimination
 
