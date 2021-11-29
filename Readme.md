@@ -17,7 +17,7 @@ cd <path-to-where-this-artifact-is-unzipped>
 # verification of Diem Framework with current version of MVP
 ./verify-diem-v2
 
-# performance comparison between a prior and the current version of MVP 
+# performance comparison between a prior and the current version of MVP
 ./verify-diem-v1 perf data/diem-v1/LibraAccount.move
 ./verify-diem-v2 perf data/diem-v2/DiemAccount.move
 
@@ -38,8 +38,8 @@ artifact/
 │    └─ move-prover-v2  # the latest release of MVP (October 2021)
 │
 ├── dep/                # dependencies of MVP
-│    ├─ hyperfine       # a utility tool that calculates statistics on program execution time 
-│    ├─ z3              # the Z3 solver executable (version 4.8.9) 
+│    ├─ hyperfine       # a utility tool that calculates statistics on program execution time
+│    ├─ z3              # the Z3 solver executable (version 4.8.9)
 │    ├─ cvc4            # the CVC4 solver executable (version 1.9-prerelease)
 │    └─ dotnet/         # the .NET framework distribution (version 5.0.208)
 │       ├─ ...          # standard .NET framework library files
@@ -59,8 +59,8 @@ artifact/
 ├── mvp-v2              # a Bash wrapper to bin/move-prover-v2 with environment setup
 ├── mvp                 # a symbolic link to the most recent release of MVP (i.e., mvp-v2)
 │
-├── verify-diem-v1      # an utility driver for verifying Move files in data/diem-v1 
-├── verify-diem-v2      # an utility driver for verifying Move files in data/diem-v2 
+├── verify-diem-v1      # an utility driver for verifying Move files in data/diem-v1
+├── verify-diem-v2      # an utility driver for verifying Move files in data/diem-v2
 │
 ├── License.txt         # the License under which this artifact is published
 └── Readme.txt          # this file
@@ -80,7 +80,7 @@ The Move Prover (MVP) supports formal specification and verification of Move cod
 
 MVP is released as 64-bit pre-built static executables compatible with at least Ubuntu 20.04 LTS for artifact evaluation. They are expected to be working out-of-the-box, as long as all dependencies (Z3, CVC4, and Boogie) are provided.
 
-To run MVP for artifact evaluation, we recommand using the bash wrappers `mvp-v1` and `mvp-v2` to invoke the prior release of MVP and the current release of MVP, respectively. The `mvp` file is a symbolic link to `mvp-v2`. We highly recommend the users to set an alias of `mvp` by
+To run MVP for artifact evaluation, we recommend using the bash wrappers `mvp-v1` and `mvp-v2` to invoke the prior release of MVP and the current release of MVP, respectively. The `mvp` file is a symbolic link to `mvp-v2`. We highly recommend the users to set an alias of `mvp` by
 ```shell script
 alias mvp=<path-to-where-this-artifact-is-unzipped>/mvp
 ```
@@ -109,14 +109,14 @@ The verification is expected to finish in about 1 minute, which is slightly fast
 
 ### Case Study on LibraAccount / DiemAccount
 
-The numbers in Section 4 - Analysis of the paper (page 14) can be reproduced by the following commands:
+The numbers in Section 4 - Analysis of the paper (page 14) can be reproduced with the following commands:
 
 ```shell scrpit
 ./verify-diem-v1 perf data/diem-v1/LibraAccount.move
 ./verify-diem-v2 perf data/diem-v2/DiemAccount.move
 ```
 
-The first command profiles the preformance on the `LibraAccount` from V1 Diem Framework using the V1 version of MVP, while the second command profiles the performance on the `DiemAccount` from V2 Diem Framework.
+The first command profiles the performance on the `LibraAccount` from V1 Diem Framework using the V1 version of MVP, while the second command profiles the performance on the `DiemAccount` from V2 Diem Framework.
 
 Using the setup above, the output is
 
@@ -143,7 +143,7 @@ To see the performance of `DiemAccount` without the filtering in MVP V2, simply 
 
 ### Case Study on Timeouts And Butterfly Effects
 
-The `LibraSystem::update_config_and_reconfigure` from the V1 version of Diem Framework takes extremely long time to verify in MVP V1 (if it can be verified). Most of the time the verificatio fails with timeout, which can be experienced with the command below:
+The `LibraSystem::update_config_and_reconfigure` from the V1 version of Diem Framework takes extremely long time to verify in MVP V1 (if it can be verified). Most of the time the verification fails with timeout, which can be experienced with the command below:
 
 ```shell script
 ./mvp-v1 data/diem-v1/LibraSystem.move -d data/diem-v1/ --timeout 100
@@ -235,23 +235,23 @@ This can be demonstrated in test case `data/examples/mut_ref/test.move`, which h
 
 ```move
 module 0x1::Test {
-    struct X { v: u64 }
-    struct Y { v: u64 }
+    struct X { a: u64 }
+    struct Y { b: u64 }
 
-    fun get_ref(b: bool, x: &mut X, y: &mut Y): &mut u64 {
-        if (b) &mut x.v else &mut y.v
+    fun get_ref(p: bool, x: &mut X, y: &mut Y): &mut u64 {
+        if (p) &mut x.a else &mut y.b
     }
 
     fun caller(p: bool): (X, Y) {
-        let x = X {v: 0};
-        let y = Y {v: 1};
+        let x = X {a: 0};
+        let y = Y {b: 1};
         let r = get_ref(p, &mut x, &mut y);
         *r = 5;
         (x, y)
     }
     spec caller {
-        ensures  p ==> result_1 == X{v: 5} && result_2 == Y{v: 1};
-        ensures !p ==> result_1 == X{v: 0} && result_2 == Y{v: 5};
+        ensures  p ==> result_1 == X{a: 5} && result_2 == Y{b: 1};
+        ensures !p ==> result_1 == X{a: 0} && result_2 == Y{b: 5};
     }
 }
 ```
@@ -378,7 +378,7 @@ bug: output.bpl(1710,4): Error: call to undeclared procedure: $Splice2
 Error: exiting with boogie verification errors
 ```
 
-The way to avoid this issue has been avoiding writing mutable borrows that may originate from multiple roots, which is less optimal and does not match with the expresivenss of the Move language.
+The way to avoid this issue in MVP V1 was to avoid writing mutable borrows that may originate from multiple roots, which is less optimal and does not match with the expresivenss of the Move language.
 
 ### Global Invariant Injection
 
@@ -465,7 +465,7 @@ To see how MVP handles the instrumentation of a generic invariant into a concret
 
 ```shell script
 cd examples/inv_generic
-mvp test.move
+mvp test.move --dump-bytecode
 cat test.move_14_global_invariant_instrumentation.bytecode
 cd -
 ```
@@ -639,7 +639,7 @@ MVP has a traditional compiler-style command line interface: you pass a set of s
 > mvp -d data/tutorial/case1 data/tutorial/case1/N.move 
 ```
 
-Above, we process the `M.move` file in the `data/tutorial/case1/` directory, and tell the prover to look up any dependencies this source might have in that directory. The verification should succeed, the prover should terminate with printing
+Above, we process the `N.move` file in the `data/tutorial/case1/` directory, and tell the prover to look up any dependencies this source might have in that directory. The verification should succeed, the prover should terminate with printing
 some statistics dependent on the configured verbosity level. In this case, the output should be similar to (NOTE: timing might be different):
 
 ```text
@@ -657,7 +657,7 @@ Run `mvp --help` for a complete list of options supported by MVP and advanced se
 When MVP finds a verification error, it prints out diagnosis in a style similar to a compiler or a debugger. We explain the different types of diagnoses below, based on the following evolving example:
 
 ```move
-// cat data/tutorial/case2/M.move
+// cat data/tutorial/case2/M_correct.move
 
 address 0x1 {
 module M {
@@ -761,6 +761,11 @@ exiting with boogie verification errors
 ```
 
 ## Availability of Artifact 
+
+### Pre-built Binaries for MVP
+
+Pre-built binaries of MVP, together with this README file and all related Move code, is available on GitHub with
+this [link](https://github.com/mengxu-fb/mvp-artifact).
 
 ### Building MVP from Scratch
 
